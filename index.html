@@ -139,6 +139,17 @@
         .draft-colonne li{ background:#eef6fc; padding:8px; margin-bottom:8px; border-radius:8px; }
         #draft-resultat{ text-align:center; margin-top:20px; }
 
+        .effectif-card { background: linear-gradient(135deg,#101820,#1b2735); border-radius:18px; padding:20px; margin:15px; color:white; cursor:pointer; transition:0.25s; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+        .effectif-card:hover { transform:scale(1.03); }
+        .effectif-header { display:flex; align-items:center; gap:20px; }
+        .effectif-photo { width:120px; height:150px; object-fit:cover; border-radius:15px; }
+        .effectif-identite h2 { margin:0; font-size:25px; }
+        .effectif-identite p { color:#ffd700; font-weight:bold; }
+        .effectif-infos { margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .effectif-infos div { background:#ffffff15; padding:12px; border-radius:10px; }
+        .effectif-infos span { display:block; color:#aaa; font-size:13px; }
+        .effectif-infos b { font-size:17px; }
+
         .historique-card{ cursor:pointer; }
         .historique-card:hover{ transform:scale(1.03); }
 
@@ -2401,25 +2412,75 @@ function genererBonusSpecial(){
         }
 
         function ouvrirCentre(categorie) {
-            const container = document.getElementById('centre-container');
-            container.innerHTML = "";
-            const joueurs = centreFormation[categorie];
-            joueurs.forEach(j => {
-                container.innerHTML += `
-                <div class="centre-card">
-                    <img src="static/images/${j.img}">
-                    <div class="centre-info">
-                        <h3>${j.nom}</h3>
-                        <p><strong>🕗 Âge :</strong> ${j.age}</p>
-                        <p><strong>🌍 Nationalité :</strong> ${j.nat}</p>
-                        <p><strong>⚽ Poste :</strong> ${j.poste}</p>
-                        <p><strong>🎂 Anniversaire :</strong> ${j.anniv}</p>
-                    </div>
+
+    const container = document.getElementById('centre-container');
+    container.innerHTML = "";
+
+    const joueurs = centreFormation[categorie];
+
+    joueurs.forEach(j => {
+
+        // retrouver l'id du joueur dans effectif
+        let idJoueur = Object.keys(effectif).find(
+            id => effectif[id].nom === j.nom
+        );
+
+        container.innerHTML += `
+
+        <div class="effectif-card" onclick="afficherJoueur('${idJoueur}')">
+
+            <div class="effectif-header">
+
+                <img 
+                src="static/images/${j.img}"
+                class="effectif-photo">
+
+                <div class="effectif-identite">
+
+                    <h2>${j.nom}</h2>
+
+                    <p>
+                    ${j.poste}
+                    </p>
+
                 </div>
-                `;
-            });
-            showSection('centre-formation-view');
-        }
+
+            </div>
+
+
+            <div class="effectif-infos">
+
+                <div>
+                    <span>Âge</span>
+                    <b>${j.age}</b>
+                </div>
+
+                <div>
+                    <span>Nationalité</span>
+                    <b>${j.nat}</b>
+                </div>
+
+                <div>
+                    <span>Arrivée</span>
+                    <b>${j.anniv || "-"}</b>
+                </div>
+
+                <div>
+                    <span>Note EA</span>
+                    <b>${j.noteea || "-"}</b>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        `;
+    });
+
+
+    showSection('centre-formation-view');
+}
 
         let deckJoueur = [];
         let deckBot = [];
