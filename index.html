@@ -20,6 +20,12 @@ body{
   overflow-x:hidden;
 }
 
+.hero,
+section,
+footer{
+  margin-left:250px;
+}
+
 /* ================= VIDEO BACKGROUND ================= */
 .video-bg{
   position:fixed;
@@ -43,35 +49,48 @@ body{
   z-index:-1;
 }
 
-/* ================= HEADER ================= */
+/* ================= SIDEBAR ================= */
 header{
   position:fixed;
+  left:0;
   top:0;
-  width:100%;
+  width:250px;
+  height:100vh;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
   display:flex;
-  justify-content:space-between;
+  flex-direction:column;
   align-items:center;
-  padding:20px 40px;
-  background:rgba(0,0,0,0.25);
-  backdrop-filter: blur(10px);
+  padding-top:40px;
   z-index:1000;
 }
 
 .logo{
+  font-size:22px;
   font-weight:bold;
   color:#6cabdd;
-  letter-spacing:2px;
+  text-align:center;
+  margin-bottom:50px;
+}
+
+nav{
+  display:flex;
+  flex-direction:column;
+  width:100%;
 }
 
 nav a{
   color:white;
-  margin:0 15px;
   text-decoration:none;
+  padding:15px 30px;
   transition:0.3s;
+  border-left:3px solid transparent;
 }
 
 nav a:hover{
   color:#6cabdd;
+  background:rgba(255,255,255,0.05);
+  border-left:3px solid #6cabdd;
 }
 
 /* ================= HERO ================= */
@@ -211,8 +230,12 @@ footer{
 <!-- HEADER -->
 <header>
   <div class="logo">MANCHESTER CITY</div>
+
   <nav>
     <a href="#players">Joueurs</a>
+    <a href="#mercato">Mercato</a>
+    <a href="#matchs">Matchs</a>
+    <a href="#compo">Ma Compo</a>
     <a href="#news">Actualités</a>
     <a href="#contact">Contact</a>
   </nav>
