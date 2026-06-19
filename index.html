@@ -1,160 +1,248 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Guerre des Clans 🐾</title>
-    <style>
-        :root {
-            --thunder-green: #2d5a27; /* Clan du Tonnerre */
-            --river-blue: #3a7ca5;    /* Clan de la Rivière */
-            --shadow-purple: #3e2a47; /* Clan de l'Ombre */
-            --wind-brown: #96705b;    /* Clan du Vent */
-            --star-gold: #f1c40f;     /* Clan de l'Astre */
-            --forest-dark: #1a2421;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manchester City FC</title>
 
-        body {
-            font-family: 'Georgia', serif;
-            margin: 0;
-            background: #e8e6e1;
-            color: var(--forest-dark);
-        }
+<style>
+/* ====== RESET ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-        nav {
-            background: var(--thunder-green);
-            color: white;
-            height: 70px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+body {
+  background: #0b1d3a;
+  color: white;
+}
 
-        .version-tag { font-size: 0.8rem; opacity: 0.8; }
+/* ====== HEADER ====== */
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #06142b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  z-index: 1000;
+}
 
-        #menu-clans {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+.logo {
+  font-weight: bold;
+  color: #6cabdd;
+  letter-spacing: 2px;
+}
 
-        .clan-card {
-            padding: 30px;
-            border-radius: 15px;
-            color: white;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+.nav a {
+  margin: 0 12px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
 
-        .clan-card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+.nav a:hover {
+  color: #6cabdd;
+}
 
-        .tonnerre { background: var(--thunder-green); border-bottom: 5px solid #1e3d1a; }
-        .riviere { background: var(--river-blue); border-bottom: 5px solid #2a5a78; }
-        .ombre { background: var(--shadow-purple); border-bottom: 5px solid #281b2e; }
-        .vent { background: var(--wind-brown); border-bottom: 5px solid #6d5142; }
+.burger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+}
 
-        main { padding: 20px; max-width: 900px; margin: 0 auto; text-align: center; }
+/* ====== HERO ====== */
+.hero {
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+              url("static/images/etihad.jpg") center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-        .section { display: none; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .active { display: block; animation: fadeIn 0.5s; }
+.hero h1 {
+  font-size: 50px;
+}
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.hero p {
+  margin: 10px 0;
+}
 
-        .cat-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
+button {
+  padding: 12px 20px;
+  border: none;
+  background: #6cabdd;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
-        .cat-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
+button:hover {
+  transform: scale(1.05);
+}
 
-        .rank { font-size: 0.8rem; color: #777; display: block; margin-bottom: 5px; }
-    </style>
+/* ====== SECTIONS ====== */
+.section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.section h2 {
+  margin-bottom: 40px;
+}
+
+/* ====== CARDS ====== */
+.cards, .news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card, .news-card {
+  background: #13294b;
+  padding: 15px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.card:hover, .news-card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* ====== DARK ====== */
+.dark {
+  background: #06142b;
+}
+
+/* ====== FOOTER ====== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: #050d1a;
+}
+
+/* ====== MOBILE ====== */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+    flex-direction: column;
+    background: #06142b;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 200px;
+    padding: 10px;
+  }
+
+  .nav.active {
+    display: flex;
+  }
+
+  .burger {
+    display: block;
+  }
+}
+</style>
+
 </head>
+
 <body>
 
-    <nav>
-        <h1 onclick="showSection('home')">WARRIOR CATS 🐾</h1>
-        <span class="version-tag">v 1.0.00</span>
-    </nav>
+<header class="header">
+  <div class="logo">MANCHESTER CITY</div>
 
-    <main>
-        <div id="home" class="section active">
-            <h2>Choisissez votre Allégeance</h2>
-            <div id="menu-clans">
-                <div class="clan-card tonnerre" onclick="showClan('Tonnerre')">Clan du Tonnerre</div>
-                <div class="clan-card riviere" onclick="showClan('Riviere')">Clan de la Rivière</div>
-                <div class="clan-card ombre" onclick="showClan('Ombre')">Clan de l'Ombre</div>
-                <div class="clan-card vent" onclick="showClan('Vent')">Clan du Vent</div>
-            </div>
-        </div>
+  <nav class="nav" id="nav">
+    <a href="#home">Accueil</a>
+    <a href="#players">Joueurs</a>
+    <a href="#news">Actualités</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-        <div id="clan-view" class="section">
-            <button onclick="showSection('home')" style="float: left;">⬅ Retour</button>
-            <h2 id="clan-title">Nom du Clan</h2>
-            <div id="cat-container" class="cat-list"></div>
-        </div>
-    </main>
+  <div class="burger" id="burger">☰</div>
+</header>
 
-    <script>
-        const allegiances = {
-            'Tonnerre': [
-                { nom: "Étoile de Feu", grade: "Chef", bio: "Le chat de feu qui sauvera le Clan." },
-                { nom: "Plume Grise", grade: "Lieutenant", bio: "Le plus fidèle compagnon." },
-                { nom: "Museau Cendré", grade: "Guérisseuse", bio: "Ancienne apprentie guerrière." }
-            ],
-            'Riviere': [
-                { nom: "Étoile Crochue", grade: "Chef", bio: "Un leader marqué par le destin." },
-                { nom: "Pattes de Brume", grade: "Lieutenant", bio: "Fille de l'Étoile Bleue." }
-            ],
-            'Ombre': [
-                { nom: "Étoile du Tigre", grade: "Chef", bio: "L'ambition faite chat." }
-            ],
-            'Vent': [
-                { nom: "Étoile filante", grade: "Chef", bio: "Sage et rapide comme le vent." }
-            ]
-        };
+<!-- HERO -->
+<section id="home" class="hero">
+  <div>
+    <h1>Manchester City FC</h1>
+    <p>Welcome to the Cityzens Universe</p>
+    <button id="discoverBtn">Découvrir</button>
+  </div>
+</section>
 
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+<!-- PLAYERS -->
+<section id="players" class="section">
+  <h2>Joueurs Vedettes</h2>
 
-        function showClan(clanName) {
-            const title = document.getElementById('clan-title');
-            const container = document.getElementById('cat-container');
-            
-            title.innerText = "Clan du " + clanName;
-            container.innerHTML = "";
+  <div class="cards">
+    <div class="card">
+      <img src="static/images/haaland.jpg" alt="">
+      <h3>Erling Haaland</h3>
+    </div>
 
-            allegiances[clanName].forEach(cat => {
-                const div = document.createElement('div');
-                div.className = "cat-item";
-                div.innerHTML = `
-                    <span class="rank">${cat.grade}</span>
-                    <strong>${cat.nom}</strong>
-                    <p style="font-size: 0.85rem;">${cat.bio}</p>
-                `;
-                container.appendChild(div);
-            });
+    <div class="card">
+      <img src="static/images/foden.jpg" alt="">
+      <h3>Phil Foden</h3>
+    </div>
 
-            showSection('clan-view');
-        }
-    </script>
+    <div class="card">
+      <img src="static/images/rodri.jpg" alt="">
+      <h3>Rodri</h3>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news" class="section dark">
+  <h2>Dernières Actualités</h2>
+
+  <div class="news-grid">
+    <div class="news-card">
+      <h3>Nouvelle Saison</h3>
+      <p>Manchester City vise encore les sommets.</p>
+    </div>
+
+    <div class="news-card">
+      <h3>Champions</h3>
+      <p>City domine toujours l’Europe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact" class="footer">
+  <p>© 2026 Manchester City Fan Site</p>
+</footer>
+
+<script>
+// MENU MOBILE
+const burger = document.getElementById("burger");
+const nav = document.getElementById("nav");
+
+burger.addEventListener("click", () => {
+  nav.classList.toggle("active");
+});
+
+// BOUTON DÉCOUVERTE
+document.getElementById("discoverBtn").addEventListener("click", () => {
+  document.getElementById("players").scrollIntoView({ behavior: "smooth" });
+});
+</script>
+
 </body>
 </html>
