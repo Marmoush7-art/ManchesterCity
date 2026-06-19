@@ -28,8 +28,8 @@
         .centre-info h3 { margin-top: 0; color: var(--city-sky-blue); }
         .centre-info p { margin: 6px 0; font-size: 0.95rem; }
 
-        #menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: #001b38; color: white; transition: 0.4s; padding-top: 70px; z-index: 1000; overflow-y: auto; box-shadow: 5px 0 20px #0005; }
-        #menu.ouvert {  left: 0; }
+        #menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100vh; background: #001b38; color: white; transition: 0.4s; padding-top: 70px; z-index: 1000; overflow-y: auto; overflow-x: hidden; box-shadow: 5px 0 20px #0005; }
+        #menu.ouvert { left: 0; }
         .menu-item { padding: 18px 25px; border-bottom: 1px solid #333; cursor: pointer; font-weight: bold; display: flex; align-items: center; color: white; text-decoration: none; }
         .menu-item-icon { margin-right: 12px; font-size: 1.2rem; min-width: 25px; text-align: center; }
         
@@ -119,8 +119,8 @@
         .content-section{ opacity:0; transform:translateY(30px); transition:.5s; }
         .content-section.active{ opacity:1; transform:translateY(0); }
 
-        .sous-menu{ max-height:0; overflow:hidden; transition:.4s; }
-        .sous-menu.show{ max-height:300px; }
+        .sous-menu{ max-height: 500px; overflow: hidden; display:none; }
+        .sous-menu.show{ display:block; }
 
         .draft-budget-box{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin:20px 0; }
         .draft-budget-box div{ background:white; padding:20px; border-radius:15px;  min-width:180px; text-align:center; }
