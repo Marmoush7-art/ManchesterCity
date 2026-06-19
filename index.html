@@ -6,242 +6,273 @@
 <title>Manchester City FC</title>
 
 <style>
-/* ====== RESET ====== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/* ================= PREMIUM RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Arial', sans-serif;
 }
 
-body {
-  background: #0b1d3a;
-  color: white;
+body{
+  background:#050d1a;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* ====== HEADER ====== */
-.header {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: #06142b;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  z-index: 1000;
+/* ================= VIDEO BACKGROUND ================= */
+.video-bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+  filter:brightness(35%) saturate(120%);
 }
 
-.logo {
-  font-weight: bold;
-  color: #6cabdd;
-  letter-spacing: 2px;
+/* overlay bleu city */
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0, 30, 80, 0.55);
+  z-index:-1;
 }
 
-.nav a {
-  margin: 0 12px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
+/* ================= HEADER ================= */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 40px;
+  background:rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
+  z-index:1000;
 }
 
-.nav a:hover {
-  color: #6cabdd;
+.logo{
+  font-weight:bold;
+  color:#6cabdd;
+  letter-spacing:2px;
 }
 
-.burger {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
+nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  transition:0.3s;
 }
 
-/* ====== HERO ====== */
-.hero {
-  height: 100vh;
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-              url("static/images/etihad.jpg") center/cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+nav a:hover{
+  color:#6cabdd;
 }
 
-.hero h1 {
-  font-size: 50px;
+/* ================= HERO ================= */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  animation: fadeIn 2s ease;
 }
 
-.hero p {
-  margin: 10px 0;
+.hero h1{
+  font-size:70px;
+  letter-spacing:3px;
+  animation: slideDown 1.5s ease;
 }
 
-button {
-  padding: 12px 20px;
-  border: none;
-  background: #6cabdd;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+.hero p{
+  margin-top:10px;
+  font-size:20px;
+  opacity:0.8;
+  animation: fadeIn 2.5s ease;
 }
 
-button:hover {
-  transform: scale(1.05);
+.btn{
+  margin-top:20px;
+  padding:12px 25px;
+  border:none;
+  background:#6cabdd;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:5px;
+  transition:0.3s;
 }
 
-/* ====== SECTIONS ====== */
-.section {
-  padding: 80px 20px;
-  text-align: center;
+.btn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 20px #6cabdd;
 }
 
-.section h2 {
-  margin-bottom: 40px;
+/* ================= SECTIONS ================= */
+section{
+  padding:100px 20px;
+  text-align:center;
 }
 
-/* ====== CARDS ====== */
-.cards, .news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  max-width: 1000px;
-  margin: auto;
+/* ================= CARDS ================= */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  max-width:1000px;
+  margin:auto;
 }
 
-.card, .news-card {
-  background: #13294b;
-  padding: 15px;
-  border-radius: 10px;
-  transition: 0.3s;
+.card{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:15px;
+  padding:15px;
+  transition:0.4s;
 }
 
-.card:hover, .news-card:hover {
-  transform: translateY(-5px);
+.card:hover{
+  transform:translateY(-10px) scale(1.03);
+  box-shadow:0 10px 30px rgba(108,172,221,0.3);
 }
 
-.card img {
-  width: 100%;
-  border-radius: 10px;
+.card img{
+  width:100%;
+  border-radius:10px;
 }
 
-/* ====== DARK ====== */
-.dark {
-  background: #06142b;
+/* ================= NEWS ================= */
+.news{
+  background:rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
 }
 
-/* ====== FOOTER ====== */
-.footer {
-  text-align: center;
-  padding: 20px;
-  background: #050d1a;
+.news-box{
+  max-width:700px;
+  margin:20px auto;
+  padding:20px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  transition:0.3s;
 }
 
-/* ====== MOBILE ====== */
-@media (max-width: 768px) {
-  .nav {
-    display: none;
-    flex-direction: column;
-    background: #06142b;
-    position: absolute;
-    top: 60px;
-    right: 0;
-    width: 200px;
-    padding: 10px;
+.news-box:hover{
+  transform:scale(1.02);
+}
+
+/* ================= FOOTER ================= */
+footer{
+  padding:30px;
+  text-align:center;
+  background:rgba(0,0,0,0.4);
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes slideDown{
+  from{transform:translateY(-50px); opacity:0}
+  to{transform:translateY(0); opacity:1}
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+  .hero h1{
+    font-size:40px;
   }
 
-  .nav.active {
-    display: flex;
-  }
-
-  .burger {
-    display: block;
+  nav{
+    display:none;
   }
 }
 </style>
-
 </head>
 
 <body>
 
-<header class="header">
-  <div class="logo">MANCHESTER CITY</div>
+<!-- 🎥 VIDEO BACKGROUND -->
+<video autoplay muted loop class="video-bg">
+  <source src="static/videos/city.mp4" type="video/mp4">
+</video>
 
-  <nav class="nav" id="nav">
-    <a href="#home">Accueil</a>
+<div class="overlay"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">MANCHESTER CITY</div>
+  <nav>
     <a href="#players">Joueurs</a>
     <a href="#news">Actualités</a>
     <a href="#contact">Contact</a>
   </nav>
-
-  <div class="burger" id="burger">☰</div>
 </header>
 
 <!-- HERO -->
-<section id="home" class="hero">
-  <div>
-    <h1>Manchester City FC</h1>
-    <p>Welcome to the Cityzens Universe</p>
-    <button id="discoverBtn">Découvrir</button>
-  </div>
-</section>
+<div class="hero">
+  <h1>MAN CITY</h1>
+  <p>Welcome to the Cityzens Universe</p>
+  <button class="btn" onclick="scrollToSection()">Découvrir</button>
+</div>
 
 <!-- PLAYERS -->
-<section id="players" class="section">
-  <h2>Joueurs Vedettes</h2>
+<section id="players">
+  <h2>Joueurs Stars</h2>
 
   <div class="cards">
     <div class="card">
-      <img src="static/images/haaland.jpg" alt="">
-      <h3>Erling Haaland</h3>
+      <img src="static/images/haaland.jpg">
+      <h3>Haaland</h3>
     </div>
 
     <div class="card">
-      <img src="static/images/foden.jpg" alt="">
-      <h3>Phil Foden</h3>
+      <img src="static/images/foden.jpg">
+      <h3>Foden</h3>
     </div>
 
     <div class="card">
-      <img src="static/images/rodri.jpg" alt="">
+      <img src="static/images/rodri.jpg">
       <h3>Rodri</h3>
     </div>
   </div>
 </section>
 
 <!-- NEWS -->
-<section id="news" class="section dark">
-  <h2>Dernières Actualités</h2>
+<section class="news" id="news">
+  <h2>Actualités</h2>
 
-  <div class="news-grid">
-    <div class="news-card">
-      <h3>Nouvelle Saison</h3>
-      <p>Manchester City vise encore les sommets.</p>
-    </div>
+  <div class="news-box">
+    <h3>Nouvelle Saison</h3>
+    <p>Manchester City vise encore la domination mondiale.</p>
+  </div>
 
-    <div class="news-card">
-      <h3>Champions</h3>
-      <p>City domine toujours l’Europe.</p>
-    </div>
+  <div class="news-box">
+    <h3>Champions League</h3>
+    <p>Les Cityzens restent parmi les favoris.</p>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer id="contact" class="footer">
-  <p>© 2026 Manchester City Fan Site</p>
+<footer id="contact">
+  © 2026 Manchester City Fan Site
 </footer>
 
 <script>
-// MENU MOBILE
-const burger = document.getElementById("burger");
-const nav = document.getElementById("nav");
-
-burger.addEventListener("click", () => {
-  nav.classList.toggle("active");
-});
-
-// BOUTON DÉCOUVERTE
-document.getElementById("discoverBtn").addEventListener("click", () => {
-  document.getElementById("players").scrollIntoView({ behavior: "smooth" });
-});
+function scrollToSection(){
+  document.getElementById("players").scrollIntoView({
+    behavior:"smooth"
+  });
+}
 </script>
 
 </body>
