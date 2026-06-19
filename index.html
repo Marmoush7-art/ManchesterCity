@@ -1,302 +1,2450 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manchester City FC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🩵 City Fans</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<style>
-/* ================= PREMIUM RESET ================= */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Arial', sans-serif;
-}
+    <style>
+        :root { --city-sky-blue: #6CABDD; --city-black: #000000; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f4f8; color: var(--city-black); padding-bottom: 50px; }
+        
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--city-black); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+        .lock-box { background: white; padding: 40px; border-radius: 20px; color: var(--city-black); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .lock-box input { padding: 12px; border-radius: 10px; border: 2px solid #ccc; width: 200px; font-size: 1rem; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
+        .lock-box button { background: var(--city-sky-blue); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        #lock-error { color: #e74c3c; margin-top: 10px; font-weight: bold; font-size: 0.9rem; }
+        
+        nav { background: var(--city-sky-blue); color: white; height: 65px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; position: sticky; top: 0; z-index: 1001; }
+        .version-tag { color: white; font-size: 0.8rem; font-weight: bold; margin-right: 15px; }
+        .nav-right { display: flex; align-items: center; }
 
-body{
-  background:#050d1a;
-  color:white;
-  overflow-x:hidden;
-}
+        .centre-card { background: white; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s; }
+        .centre-card:hover { transform: scale(1.02); }
+        .centre-card img { width: 160px; height: 180px; object-fit: cover; }
+        .centre-info { padding: 20px; text-align: left; flex: 1;}
+        .centre-info h3 { margin-top: 0; color: var(--city-sky-blue); }
+        .centre-info p { margin: 6px 0; font-size: 0.95rem; }
 
-.hero,
-section,
-footer{
-  margin-left:250px;
-}
+        #menu { position: fixed; right: -280px; top: 0; width: 280px; height: 100%; background: #1a1a1a; color: white; transition: 0.4s; padding-top: 70px; z-index: 1000; overflow-y: auto; }
+        #menu.ouvert { right: 0; }
+        .menu-item { padding: 18px 25px; border-bottom: 1px solid #333; cursor: pointer; font-weight: bold; display: flex; align-items: center; color: white; text-decoration: none; }
+        .menu-item-icon { margin-right: 12px; font-size: 1.2rem; min-width: 25px; text-align: center; }
+        
+        .sous-menu { display: none; background: #111; padding-bottom: 10px; }
+        .show { display: block !important; }
+        .cat-titre { color: #888; font-size: 0.75rem; font-weight: bold; padding: 12px 25px 5px 35px; text-transform: uppercase; }
+        .joueur-link { color: var(--city-sky-blue); display: block; padding: 8px 45px; cursor: pointer; font-size: 0.9rem; }
+        main { text-align: center; padding: 30px 15px; max-width: 850px; margin: 0 auto; }
+        .content-section { display: none; }
+        .active { display: block !important; }
+        .box-info { background: var(--city-sky-blue); padding: 30px; border-radius: 15px; margin-top: 25px; color: #000; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        #photo { max-width: 280px; width: 100%; border-radius: 15px; border: 6px solid var(--city-sky-blue); margin-bottom: 25px; }
 
-/* ================= VIDEO BACKGROUND ================= */
-.video-bg{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:-2;
-  filter:brightness(35%) saturate(120%);
-}
+        .logo-accueil{ width: 400px; height: auto; display: block; margin: 20px auto; }
+        
+        .bio-container { background: white; padding: 25px; border-radius: 10px; margin-top: 15px; text-align: left; min-height: 300px; line-height: 1.7; font-size: 1.05rem; }
 
-/* overlay bleu city */
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0, 30, 80, 0.55);
-  z-index:-1;
-}
+        .transfert-card { background: white; border: 2px solid var(--city-sky-blue); border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; cursor: pointer; overflow: hidden; }
+        .transfert-card img { width: 100px; height: 130px; object-fit: cover; }
+        .transfert-info { padding: 15px; text-align: left; color: #000; font-weight: bold; flex: 1; }
+        .transfert-date { font-size: 0.8rem; color: #666; margin-top: 5px; }
+        
+        #chat-messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; background: #fff; border-radius: 10px; display: flex; flex-direction: column; text-align: left; }
+        .msg { background: var(--city-sky-blue); color: white; padding: 10px 15px; border-radius: 18px; margin-bottom: 10px; align-self: flex-start; max-width: 80%; word-wrap: break-word; }
+        .chat-container { position: relative; background: #eee; padding: 10px; border-radius: 10px; margin-top: 10px; }
+        .chat-area { display: flex; gap: 8px; align-items: center; }
+        .chat-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #ccc; outline: none; }
+        .chat-area button { background: var(--city-black); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        .emoji-toggle { font-size: 1.5rem; cursor: pointer; background: none; border: none; padding: 0; }
+        
+        .emoji-picker { display: none; position: absolute; bottom: 65px; left: -100px; background: white; border: 2px solid var(--city-sky-blue); border-radius: 15px; padding: 15px; width: 400px; max-height: 350px; overflow-y: auto; grid-template-columns: repeat(9, 1fr); gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 10; }
+        @media (max-width: 600px) { .emoji-picker { width: 280px; left: 10px; grid-template-columns: repeat(6, 1fr); } }
+        .emoji-picker span { font-size: 1.6rem; cursor: pointer; text-align: center; padding: 2px; transition: transform 0.1s; }
+        .emoji-picker span:hover { transform: scale(1.2); background-color: #f0f0f0; border-radius: 5px; }
 
-/* ================= SIDEBAR ================= */
-header{
-  position:fixed;
-  left:0;
-  top:0;
-  width:250px;
-  height:100vh;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(10px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding-top:40px;
-  z-index:1000;
-}
+        .statut.en-lice { color: green; font-weight: bold; }
+        .statut.elimine { color: red; font-weight: bold; }
 
-.logo{
-  font-size:22px;
-  font-weight:bold;
-  color:#6cabdd;
-  text-align:center;
-  margin-bottom:50px;
-}
+        .match-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 8px solid var(--city-sky-blue); }
+        .match-header { font-size: 0.8rem; color: #888; margin-bottom: 15px; font-weight: bold; text-transform: uppercase; }
+        .match-main { display: flex; justify-content: space-between; align-items: center; }
+        .team { flex: 1; text-align: center; }
+        .team img { width: 50px; height: 50px; object-fit: contain; }
+        .team p { margin: 8px 0 0; font-weight: bold; font-size: 0.9rem; }
+        .score-center { flex: 1; font-size: 2.2rem; font-weight: 800; color: var(--city-black); }
+        .match-details { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .side-details h4 { font-size: 0.75rem; margin: 0 0 8px 0; color: var(--city-sky-blue); text-transform: uppercase; }
+        .stat-line { font-size: 0.85rem; margin-bottom: 5px; }
+        .live-badge { background: #e74c3c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; animation: blink 1.5s infinite; vertical-align: middle; margin-left: 5px; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .urgent-contract { border-left: 8px solid #e74c3c !important; }
 
-nav{
-  display:flex;
-  flex-direction:column;
-  width:100%;
-}
+        .compo-field { width: 100%; max-width: 600px; height: 550px; background-color: var(--city-sky-blue); border-radius: 20px; border: 6px solid var(--city-black); margin: 0 auto; padding: 10px; box-sizing: border-box; position: relative; overflow: hidden; }
+        .field-line { position: absolute; background: rgba(255,255,255,0.5); }
+        .field-center-line { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
+        .field-center-circle { top: 50%; left: 50%; width: 110px; height: 110px; border: 2px solid rgba(255,255,255,0.5); border-radius: 50%; transform: translate(-50%, -50%); }
+        
+        .player-spot { width: 70px; height: 95px; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;transform: translateX(-50%); cursor: pointer; z-index: 10; transition: transform 0.2s; }
+        .player-spot:hover { transform: scale(1.1); }
+        .player-spot.selected { border: 3px solid #e74c3c; border-radius: 10px; box-shadow: 0 0 15px rgba(231, 76, 60, 0.7); }
 
-nav a{
-  color:white;
-  text-decoration:none;
-  padding:15px 30px;
-  transition:0.3s;
-  border-left:3px solid transparent;
-}
+        header { height:90px; background:#9bc5e6; display:flex; align-items:center; padding:0 8%; position:sticky; top:0; z-index:1000; box-shadow:0 5px 20px #0002; }
+        .menu-item { margin:0 20px; font-weight:700; transition:.3s; }
+        .menu-item:hover { color:#0072ce; transform:translateY(-3px); }
 
-nav a:hover{
-  color:#6cabdd;
-  background:rgba(255,255,255,0.05);
-  border-left:3px solid #6cabdd;
-}
+        .spot-img-holder { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border: 2px dashed var(--city-black); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 5px; }
+        .spot-img-holder img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .spot-img-holder.has-player { border: 3px solid var(--city-black); background: white; }
+        .spot-img-holder.has-player img { display: block; }
+        .spot-img-holder.has-player .spot-label { display: none; }
 
-/* ================= HERO ================= */
-.hero{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  animation: fadeIn 2s ease;
-}
+        .player-stats-box { background: white; margin-top: 25px; padding: 20px; border-radius: 15px; color: var(--city-black); }
+        .player-stats-box h3 { text-align: center; margin-bottom: 20px; color: var(--city-sky-blue); }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .stat-card { background: #eef6fc; border-radius: 12px; padding: 20px; text-align: center; transition: 0.2s; }
+        .stat-card:hover { transform: scale(1.05); background: var(--city-sky-blue); color: white; }
+        .stat-number { display: block; font-size: 2rem; font-weight: 800; }
+        .stat-label { font-size: 0.9rem; margin-top: 5px; display: block; }
 
-.hero h1{
-  font-size:70px;
-  letter-spacing:3px;
-  animation: slideDown 1.5s ease;
-}
+        .player-card { background:linear-gradient(#001b38,#003b6f); border-radius:0; overflow:hidden; position:relative; color:white; transition:.3s; }
+        .player-card:hover { transform:scale(1.05); box-shadow:0 20px 40px #0005; }
+        .player-number { font-size:80px; position:absolute; right:10px; top:0; opacity:.7;}
 
-.hero p{
-  margin-top:10px;
-  font-size:20px;
-  opacity:0.8;
-  animation: fadeIn 2.5s ease;
-}
+        .content-section{ opacity:0; transform:translateY(30px); transition:.5s; }
+        .content-section.active{ opacity:1; transform:translateY(0); }
 
-.btn{
-  margin-top:20px;
-  padding:12px 25px;
-  border:none;
-  background:#6cabdd;
-  color:black;
-  font-weight:bold;
-  cursor:pointer;
-  border-radius:5px;
-  transition:0.3s;
-}
+        .sous-menu{ max-height:0; overflow:hidden; transition:.4s; }
+        .sous-menu.show{ max-height:300px; }
 
-.btn:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 20px #6cabdd;
-}
+        .draft-budget-box{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin:20px 0; }
+        .draft-budget-box div{ background:white; padding:20px; border-radius:15px;  min-width:180px; text-align:center; }
+        #draft-carte{ width:100%; max-width:700px; margin:20px auto; }
+        .draft-player-card{ background:white; border:3px solid #6CABDD; border-radius:15px; padding:20px; text-align:center; }
+        .draft-actions{ text-align:center; margin:20px 0; }
+        .draft-actions input{ padding:10px; width:150px; }
+        .draft-actions button{ padding:10px 15px; margin-left:5px; cursor:pointer; }
+        #historique-enchere{ max-width:500px; margin:20px auto; background:white; padding:15px; border-radius:10px; min-height:120px; }
+        .draft-equipes{ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px; }
+        .draft-colonne{ background:white; padding:20px; border-radius:15px; width:280px; }
+        .draft-colonne ul{ list-style:none; padding:0; }
+        .draft-colonne li{ background:#eef6fc; padding:8px; margin-bottom:8px; border-radius:8px; }
+        #draft-resultat{ text-align:center; margin-top:20px; }
 
-/* ================= SECTIONS ================= */
-section{
-  padding:100px 20px;
-  text-align:center;
-}
+        .historique-card{ cursor:pointer; }
+        .historique-card:hover{ transform:scale(1.03); }
 
-/* ================= CARDS ================= */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  max-width:1000px;
-  margin:auto;
-}
+        .spot-label { font-size: 0.8rem; color: white; font-weight: bold; text-transform: uppercase; }
+        .spot-player-name { font-size: 0.7rem; color: var(--city-black); font-weight: bold; background: rgba(255,255,255,0.8); padding: 2px 4px; border-radius: 4px; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: center; display: none; }
+        .spot-img-holder.has-player + .spot-player-name { display: block; }
 
-.card{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:15px;
-  padding:15px;
-  transition:0.4s;
-}
+        .compo-squad-list { width: 100%; max-width: 600px; margin: 25px auto 0; text-align: left; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .compo-cat-titre { color: var(--city-sky-blue); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin: 15px 0 8px; }
+        .compo-joueur-link { display: inline-block; padding: 6px 12px; margin: 3px; background: #eef6fc; color: var(--city-black); border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .compo-joueur-link:hover { background: var(--city-sky-blue); color: white; }
 
-.card:hover{
-  transform:translateY(-10px) scale(1.03);
-  box-shadow:0 10px 30px rgba(108,172,221,0.3);
-}
-
-.card img{
-  width:100%;
-  border-radius:10px;
-}
-
-/* ================= NEWS ================= */
-.news{
-  background:rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-}
-
-.news-box{
-  max-width:700px;
-  margin:20px auto;
-  padding:20px;
-  border-radius:10px;
-  background:rgba(255,255,255,0.08);
-  transition:0.3s;
-}
-
-.news-box:hover{
-  transform:scale(1.02);
-}
-
-/* ================= FOOTER ================= */
-footer{
-  padding:30px;
-  text-align:center;
-  background:rgba(0,0,0,0.4);
-}
-
-/* ================= ANIMATIONS ================= */
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-
-@keyframes slideDown{
-  from{transform:translateY(-50px); opacity:0}
-  to{transform:translateY(0); opacity:1}
-}
-
-/* ================= RESPONSIVE ================= */
-@media(max-width:768px){
-  .hero h1{
-    font-size:40px;
-  }
-
-  nav{
-    display:none;
-  }
-}
-</style>
+        /* Styles Quiz */
+        #quiz-view { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .quiz-box { margin-top: 20px; padding: 20px; border: 3px solid var(--city-sky-blue); border-radius: 15px; }
+        .quiz-clues { font-size: 1.4rem; margin-bottom: 20px; line-height: 2.2; text-align: left; background: #f9f9f9; padding: 20px; border-radius: 10px; }
+        .quiz-feedback { font-size: 1.6rem; font-weight: 800; margin-top: 20px; min-height: 40px; }
+        .quiz-img { max-width: 220px; border-radius: 15px; margin: 15px auto; display: none; border: 5px solid var(--city-sky-blue); }
+        .quiz-input-area { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        .quiz-input-area input { padding: 12px; border-radius: 10px; border: 2px solid #ccc; width: 60%; font-size: 1rem; }
+        .quiz-input-area button { background: var(--city-black); color: white; border: none; padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    </style>
 </head>
-
 <body>
+    
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h2 style="margin-top:0;">🩵 Accès Réservé 🩵</h2>
+            <p>Mot de passe :</p>
+            <input type="password" id="site-password" placeholder="Mot de passe">
+            <button onclick="checkPassword()">VALIDER</button>
+            <div id="lock-error"></div>
+        </div>
+    </div>
 
-<!-- 🎥 VIDEO BACKGROUND -->
-<video autoplay muted loop class="video-bg">
-  <source src="static/videos/city.mp4" type="video/mp4">
-</video>
+    <nav>
+        <h1 onclick="showSection('accueil')">🩵 CITY FANS</h1>
+        <div class="nav-right">
+            <span class="version-tag">v 1.04.67</span>
+            <button id="btn-menu" style="font-size:35px; background:none; border:none; color:white; cursor:pointer;" onclick="toggleMenu(event)">☰</button>
+        </div>
+    </nav>
 
-<div class="overlay"></div>
+    <div id="menu">
+        <ul>
+            <li class="menu-item" onclick="showSection('accueil')"><span class="menu-item-icon">🏠</span>Accueil</li>
+            <li class="menu-item" onclick="showSection('matchs-view')"><span class="menu-item-icon">📅</span>Matchs</li>
+            <li class="menu-item" onclick="toggleSubMenu('sub-effectif')"><span class="menu-item-icon">⚽</span>Effectif ▾</li>
+            <div id="sub-effectif" class="sous-menu">
+                <div class="cat-titre">🧤 Gardiens</div>
+                <span class="joueur-link" onclick="afficherJoueur('bettinelli')">Marcus Bettinelli</span>
+                <span class="joueur-link" onclick="afficherJoueur('donnarumma')">Gianluigi Donnarumma</span>
+                <span class="joueur-link" onclick="afficherJoueur('trafford')">James Trafford</span>
+                <div class="cat-titre">🛡️ Défenseurs</div>
+                <span class="joueur-link" onclick="afficherJoueur('akanji')">Manuel Akanji</span>
+                <span class="joueur-link" onclick="afficherJoueur('ake')">Nathan Aké</span>
+                <span class="joueur-link" onclick="afficherJoueur('alleyne')">Max Alleyne</span>
+                <span class="joueur-link" onclick="afficherJoueur('aitnouri')">Rayan Ait-Nouri</span>
+                <span class="joueur-link" onclick="afficherJoueur('dias')">Ruben Dias</span>
+                <span class="joueur-link" onclick="afficherJoueur('guehi')">Marc Guéhi</span>
+                <span class="joueur-link" onclick="afficherJoueur('gvardiol')">Josko Gvardiol</span>
+                <span class="joueur-link" onclick="afficherJoueur('khusanov')">Abdukodir Khusanov</span>
+                <span class="joueur-link" onclick="afficherJoueur('lewis')">Rico Lewis</span>
+                <span class="joueur-link" onclick="afficherJoueur('nunes')">Matheus Nunes</span>
+                <span class="joueur-link" onclick="afficherJoueur('oreilly')">Nico O'Reilly</span>
+                <span class="joueur-link" onclick="afficherJoueur('reis')">Vitor Reis</span>
+                <span class="joueur-link" onclick="afficherJoueur('wilson-esbrand')">Joshua Wilson-Esbrand</span>
+                <div class="cat-titre">⚡ Milieux</div>
+                <span class="joueur-link" onclick="afficherJoueur('cherki')">Rayan Cherki</span>
+                <span class="joueur-link" onclick="afficherJoueur('echeverri')">Claudio Echeverri</span>
+                <span class="joueur-link" onclick="afficherJoueur('foden')">Phil Foden</span>
+                <span class="joueur-link" onclick="afficherJoueur('gonzalez')">Nico Gonzalez</span>
+                <span class="joueur-link" onclick="afficherJoueur('grealish')">Jack Grealish</span>
+                <span class="joueur-link" onclick="afficherJoueur('kovacic')">Matéo Kovacic</span>
+                <span class="joueur-link" onclick="afficherJoueur('nypan')">Sverre Nypan</span>
+                <span class="joueur-link" onclick="afficherJoueur('phillips')">Kalvin Phillips</span>
+                <span class="joueur-link" onclick="afficherJoueur('reijnders')">Tijjani Reijnders</span>
+                <span class="joueur-link" onclick="afficherJoueur('rodri')">Rodri</span>
+                <div class="cat-titre">⚔️ Attaquants</div>
+                <span class="joueur-link" onclick="afficherJoueur('doku')">Jérémy Doku</span>
+                <span class="joueur-link" onclick="afficherJoueur('haaland')">Erling Haaland</span>
+                <span class="joueur-link" onclick="afficherJoueur('marmoush')">Omar Marmoush</span>
+                <span class="joueur-link" onclick="afficherJoueur('savinho')">Savinho</span>
+                <span class="joueur-link" onclick="afficherJoueur('semenyo')">Antoine Semenyo</span>
+            </div>
+            <li class="menu-item" onclick="toggleSubMenu('sub-mercato')"><span class="menu-item-icon">🔄</span>Mercato ▾</li>
+            <div id="sub-mercato" class="sous-menu"><span class="joueur-link" onclick="showSection('mercato-recap')">📦 Dernier Mercato</span><span class="joueur-link" onclick="showSection('actus-mercato')">📃 Rumeurs arrivées</span><span class="joueur-link" onclick="showSection('actus-mercato-b')">📃 Rumeurs départs</span>
+            </div>
+            <li class="menu-item" onclick="showSection('classement-recap')"><span class="menu-item-icon">📊</span>Classement</li>
+            <li class="menu-item" onclick="showSection('joueursinter-recap')"><span class="menu-item-icon">🏁</span>Joueurs Inter</li>
+            <li class="menu-item" onclick="preparerCompoInteractive()"><span class="menu-item-icon">📋</span>Ma Compo</li>
+            <li class="menu-item" onclick="toggleSubMenu('sub-centre-formation')"><span class="menu-item-icon">🧬</span>Centre de form ▾</li>
+            <div id="sub-centre-formation" class="sous-menu"><span class="joueur-link" onclick="ouvrirCentre('gardiens')">🧤 Gardiens</span><span class="joueur-link" onclick="ouvrirCentre('defenseurs')">🛡️ Défenseurs</span><span class="joueur-link" onclick="ouvrirCentre('milieux')">⚡ Milieux</span><span class="joueur-link" onclick="ouvrirCentre('attaquants')">⚔️ Attaquants</span>
+            </div>
+            <li class="menu-item" onclick="demarrerQuiz()"><span class="menu-item-icon">🔍</span>Quiz</li>
+            <li class="menu-item" onclick="ouvrirDraft()"><span class="menu-item-icon">🎯</span>Jeu Draft</li>
 
-<!-- HEADER -->
-<header>
-  <div class="logo">MANCHESTER CITY</div>
+</div>
+        </ul>
+    </div>
+    <div id="quiz-view" class="content-section">
+        <h2>🔍 QUIZ : QUI EST-CE ?
+        ⚠️ Attention, les fautes ne sont pas supportées par le site</h2>
+        <div class="quiz-box">
+            <div id="quiz-clues" class="quiz-clues"></div>
+            <div class="quiz-input-area">
+                <input type="text" id="quiz-answer" placeholder="Nom du joueur...">
+                <button onclick="verifierReponseQuiz()">Valider</button>
+            </div>
+            <div id="quiz-feedback" class="quiz-feedback"></div>
+            <img id="quiz-img-result" class="quiz-img" src="">
+            <button onclick="demarrerQuiz()" style="margin-top:20px;">Suivant ➔</button>
+        </div>
+    </div>
 
-  <nav>
-    <a href="#players">Joueurs</a>
-    <a href="#mercato">Mercato</a>
-    <a href="#matchs">Matchs</a>
-    <a href="#compo">Ma Compo</a>
-    <a href="#news">Actualités</a>
-    <a href="#contact">Contact</a>
-  </nav>
-</header>
+    <main>
+        <div id="accueil" class="content-section active">
+            <h2>🩵 BIENVENUE CITYZEN 🩵</h2>
+            <img src="static/images/mancityecussonclasse.jpg" class="logo-accueil">
+            <div class="match-card">
+        <h3>📰 Dernière Actualité</h3>
+        <p><strong>📳 Bernardo Silva s'engage librement avec le Real Madrid</strong></p>
+        <p><strong>📳 Mathys Detourbet proche de signer à Man City</strong></p>
+    </div>
 
-<!-- HERO -->
-<div class="hero">
-  <h1>MAN CITY</h1>
-  <p>Welcome to the Cityzens Universe</p>
-  <button class="btn" onclick="scrollToSection()">Découvrir</button>
+    <div class="match-card">
+        <h3>📅 Prochain Match</h3>
+        <p>Manchester City vs Inter de Milan</p>
+        <p>Match amical</p>
+    </div>
+
+    <div class="match-card">
+        <h3>⚽ Meilleur Buteur</h3>
+        <p></p>
+    </div>
+
+    <div class="match-card">
+        <h3>🏆 Coupe du Monde</h3>
+        <p>Haaland commence la compétition en beauté.</p>
+    </div>
+            
+        </div>
+
+        <div class="live-match">
+
+    <div id="competition"></div>
+
+    <div>
+        <span id="equipe1"></span>
+        <strong id="score"></strong>
+        <span id="equipe2"></span>
+    </div>
+
+    <div id="minute"></div>
+
+    <div id="statut"></div>
+
 </div>
 
-<!-- PLAYERS -->
-<section id="players">
-  <h2>Joueurs Stars</h2>
+<div id="draft-view" class="content-section" style="display:none;">
 
-  <div class="cards">
-    <div class="card">
-      <img src="static/images/haaland.jpg">
-      <h3>Haaland</h3>
+    <h2>🎯 Draft Challenge</h2>
+
+    <div class="draft-budget-box">
+
+        <div>
+            <h3>👤 Toi</h3>
+            <span id="budget-joueur">250</span> M€
+        </div>
+
+        <div>
+            <h3>🤖 Bot</h3>
+            <span id="budget-bot">250</span> M€
+        </div>
+
     </div>
 
-    <div class="card">
-      <img src="static/images/foden.jpg">
-      <h3>Foden</h3>
+    <div id="draft-carte"></div>
+
+    <div class="draft-actions">
+
+        <input
+            type="number"
+            id="montant-enchere"
+            placeholder="Votre enchère">
+
+        <button
+            id="btn-encherir"
+            onclick="faireEnchere()">
+            💰 Miser
+        </button>
+
+        <button
+            id="btn-abandonner"
+            onclick="abandonnerEnchere()">
+            ❌ Abandonner
+        </button>
+
+        <button
+            id="btn-sauter"
+            onclick="utiliserBonusSaut()">
+            🗑️ Sauter
+        </button>
+
+        <button
+            id="btn-budget"
+            onclick="utiliserBonusBudget()">
+            💸 +20 M€
+        </button>
+
+        <button
+            id="btn-reduction"
+            onclick="activerReduction()">
+            🎯 -50%
+        </button>
+
+        <button id="btn-bonus-special" onclick="utiliserBonusSpecial()" style="display:none;">
+            🎁 Bonus spécial
+        </button>
+
     </div>
 
-    <div class="card">
-      <img src="static/images/rodri.jpg">
-      <h3>Rodri</h3>
+    <div id="historique-enchere"></div>
+
+    <div class="draft-equipes">
+
+        <div class="draft-colonne">
+
+            <h3>Ton Trio</h3>
+
+            <ul id="liste-joueur-draft">
+            </ul>
+
+        </div>
+
+        <div class="draft-colonne">
+
+            <h3>Trio du Bot</h3>
+
+            <ul id="liste-bot-draft">
+            </ul>
+
+        </div>
+
     </div>
-  </div>
-</section>
 
-<!-- NEWS -->
-<section class="news" id="news">
-  <h2>Actualités</h2>
+    <div
+    id="zone-restart"
+    style="display:none;text-align:center;margin-top:20px;">
 
-  <div class="news-box">
-    <h3>Nouvelle Saison</h3>
-    <p>Manchester City vise encore la domination mondiale.</p>
-  </div>
+    <button onclick="recommencerDraft()">
+        🔄 Rejouer
+    </button>
 
-  <div class="news-box">
-    <h3>Champions League</h3>
-    <p>Les Cityzens restent parmi les favoris.</p>
-  </div>
-</section>
+</div>
 
-<!-- FOOTER -->
-<footer id="contact">
-  © 2026 Manchester City Fan Site
-</footer>
+<div id="draft-resultat"></div>
 
-<script>
-function scrollToSection(){
-  document.getElementById("players").scrollIntoView({
-    behavior:"smooth"
-  });
+</div>
+
+        <div id="matchs-view" class="content-section">
+            <h2>RESULTATS</h2>
+
+            <div class="match-card" style="border-left-color: #28a745;">
+                <div class="match-header">Match Amical</div>
+                <div class="match-main">
+                    <div class="team"><img src="static/images/mancity.jpg"><p>Man City</p></div>
+                    <div class="score-center">_ - _</div>
+                    <div class="team"><img src="static/images/intermilan.jpg"><p>Inter Milan</p></div>
+                </div>
+        <div class="match-details">
+            <div class="side-details">
+                <h4>Manchester City</h4>
+            </div>
+            <div class="side-details">
+                <h4>Inter de Milan</h4>
+            </div>
+        </div>
+    </div>
+
+            <div class="match-card" style="border-left-color: #dc3545;">
+                <div class="match-header">Community Shield : Finale 🏆</div>
+                <div class="match-main">
+                    <div class="team"><img src="static/images/mancity.jpg"><p>Man City</p></div>
+                    <div class="score-center">_ - _</div>
+                    <div class="team"><img src="static/images/arsenal.jpg"><p>Arsenal</p></div>
+                </div>
+        <div class="match-details">
+            <div class="side-details">
+                <h4>Manchester City</h4>
+            </div>
+            <div class="side-details">
+                <h4>Arsenal</h4>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>   
+
+        <div id="actus-mercato" class="content-section">
+            <h2>Actus Mercato 📰</h2>
+            <div class="transfert-card" onclick="afficherActuConceicao()">
+                <img src="static/images/conceicao.jpg">
+                <div class="transfert-info">
+                    <h3>Eduardo Conceição</h3>
+                    <p>Statut : Très convoité</p>
+                </div>
+            </div>
+            <div class="transfert-card" onclick="afficherActuDetourbet()">
+                <img src="static/images/detourbet.jpg">
+                <div class="transfert-info">
+                    <h3>Mathys Detourbet</h3>
+                    <p>Statut : Signature imminente ✅</p>
+                </div>
+            </div>
+            <div class="transfert-card" onclick="afficherActuAnderson()">
+                <img src="static/images/anderson.jpg">
+                <div class="transfert-info">
+                    <h3>Elliot Anderson</h3>
+                    <p>Statut : City proche de le signer</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="joueur-solo" class="content-section">
+            <h2 id="nom-joueur"></h2>
+            <img id="photo" src="" style="width:200px; border-radius:15px;">
+            <div class="box-info">
+                <table>
+                    <tr><th>Âge</th><td id="s-age"></td></tr>
+                    <tr><th>Nationalité</th><td id="s-nat"></td></tr>
+                    <tr><th>Salaire / mois</th><td id="s-paye"></td></tr>
+                    <tr><th>Fin de contrat</th><td id="s-fin"></td></tr>
+                    <tr><th>Valeur</th><td id="s-valeur"></td></tr>
+                    <tr><th>Note EA Sports</th><td id="s-noteea"></td></tr>
+                </table>
+                <div class="bio-container">
+                    <strong>Biographie :</strong><br><br>
+                    <span id="s-bio"></span>
+                    <div class="stat-card"><span class="stat-number" id="s-buts">0</span><span class="stat-label">⚽ Buts</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-passes">0</span><span class="stat-label">👟 Passes D.</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-matchs">0</span><span class="stat-label">🎮 Matchs</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-note">0.0</span><span class="stat-label">⭐ Note</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="actus-mercato-b" class="content-section">
+            <h2>Actus Mercato 📰</h2>
+            <div class="transfert-card" onclick="afficherJoueur('savinho')">
+                <img src="static/images/savinhotransfermarkt.jpg">
+                <div class="transfert-info">
+                    <h3>Savinho</h3>
+                    <p>Statut : Tottenham ne le lache pas</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="joueur-solo" class="content-section">
+            <h2 id="nom-joueur"></h2>
+            <img id="photo" src="" style="width:200px; border-radius:15px;">
+            <div class="box-info">
+                <table>
+                    <tr><th>Âge</th><td id="s-age"></td></tr>
+                    <tr><th>Nationalité</th><td id="s-nat"></td></tr>
+                    <tr><th>Salaire / mois</th><td id="s-paye"></td></tr>
+                    <tr><th>Fin de contrat</th><td id="s-fin"></td></tr>
+                    <tr><th>Valeur</th><td id="s-valeur"></td></tr>
+                    <tr><th>Note EA Sports</th><td id="s-noteea"></td></tr>
+                </table>
+                <div class="bio-container">
+                    <strong>Biographie :</strong><br><br>
+                    <span id="s-bio"></span>
+                    <div class="stat-card"><span class="stat-number" id="s-buts">0</span><span class="stat-label">⚽ Buts</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-passes">0</span><span class="stat-label">👟 Passes D.</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-matchs">0</span><span class="stat-label">🎮 Matchs</span></div>
+                    <div class="stat-card"><span class="stat-number" id="s-note">0.0</span><span class="stat-label">⭐ Note</span></div>
+                </div>
+            </div>
+        </div>
+  
+        <div id="ma-compo-view" class="content-section">
+            <h2>Ma Compo 📋</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 15px; color: #666;">Configuration 4-2-3-1</p>
+            
+<div class="compo-field">
+
+    <!-- Ligne défense -->
+    <div class="player-spot" id="spot-def-dd" style="top: 80%; left: 80%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">DD</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-def-dc1" style="top: 78%; left: 60%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">DC</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-def-dc2" style="top: 78%; left: 40%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">DC</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-def-dg" style="top: 80%; left: 20%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">DG</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <!-- 2 milieux défensifs -->
+    <div class="player-spot" id="spot-mil-mc1" style="top: 60%; left: 40%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">MC</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-mil-mc2" style="top: 60%; left: 60%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">MC</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <!-- 3 offensifs -->
+    <div class="player-spot" id="spot-att-ag" style="top: 40%; left: 20%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">AG</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-mil-moc" style="top: 35%; left: 50%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">MOC</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <div class="player-spot" id="spot-att-ad" style="top: 40%; left: 80%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">AD</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <!-- BU -->
+    <div class="player-spot" id="spot-att-bu" style="top: 15%; left: 50%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">BU</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+    <!-- Gardien -->
+    <div class="player-spot" id="spot-gk-1" style="top: 90%; left: 50%;" onclick="selectSpot(this)">
+        <div class="spot-img-holder"><img><span class="spot-label">G</span></div>
+        <div class="spot-player-name"></div>
+    </div>
+
+</div>
+
+            <div class="compo-squad-list">
+                <h3>Choisir un joueur ⚽</h3>
+                <div id="liste-joueurs-compo"></div>
+            </div>
+        </div>
+
+        <div id="centre-formation-view" class="content-section">
+            <h2 id="centre-title">🧬 Centre de formation</h2>
+            <div id="centre-container"></div>
+        </div>
+
+        <div id="mercato-recap" class="content-section">
+            <h2>Historique du Mercato (été 2026)</h2>
+            <h3>Arrivées</h3>
+            
+            <h3>Départs</h3>
+            <div class="transfert-card"><img src="static/images/20.jpg"><div class="transfert-info"><h3>Bernardo Silva</h3><p>Vers : Real Madrid</p><p>Prix : Transfert libre</p><p class="transfert-date">Juin 2026</p></div></div>
+            <h2>Historique du Mercato (hiver 2025-2026)</h2>
+            <h3>Arrivées</h3>
+            <div class="transfert-card" onclick="afficherJoueur('guehi')"><img src="static/images/15.jpg"><div class="transfert-info"><h3>Marc Guéhi</h3><p>Depuis Crystal Palace</p><p>Prix : 23M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('semenyo')"><img src="static/images/42.jpg"><div class="transfert-info"><h3>Antoine Semenyo</h3><p>Depuis Bournemouth</p><p>Prix : 72M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+
+            <h3>Départs</h3>
+            <div class="transfert-card"><img src="static/images/bobb.jpg"><div class="transfert-info"><h3>Oscar Bobb</h3><p>Vers : Fulham</p><p>Prix : 31,2M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/ortega.jpg"><div class="transfert-info"><h3>Stefan Ortega Moreno</h3><p>Vers : Nottingham Forest</p><p>Prix : 0,58M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/doyle.jpg"><div class="transfert-info"><h3>Callum Doyle</h3><p>Vers : Wrexham</p><p>Prix : 5,8M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/kayky.jpg"><div class="transfert-info"><h3>Kayky</h3><p>Vers : EC Bahia</p><p>Prix : 3M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/wright.jpg"><div class="transfert-info"><h3>Jacob Wright</h3><p>Vers : Norwich</p><p>Prix : 2,7M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/alfa-ruprecht.jpg"><div class="transfert-info"><h3>Farid Alfa-Ruprecht</h3><p>Vers : Leverkusen</p><p>Prix : 1,3M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/susoho.jpg"><div class="transfert-info"><h3>Mahamadou Susoho</h3><p>Vers : Kocaelispor</p><p>Prix : 0,4M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            <div class="transfert-card"><img src="static/images/katongo.jpg"><div class="transfert-info"><h3>Jadel Katongo</h3><p>Vers : Kayserispor</p><p>Prix : 0,4M €</p><p class="transfert-date">Janvier 2026</p></div></div>
+            
+        </div>
+
+        <div id="joueursinter-recap" class="content-section">
+            <h2>Coupe du monde 2026</h2>
+            <div class="transfert-card" onclick="afficherJoueur('guehi')"><img src="static/images/guehiinter.jpg"><div class="transfert-info"><h3>Marc Guéhi</h3><p>Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°6</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('trafford')"><img src="static/images/traffordinter.jpg"><div class="transfert-info"><h3>James Trafford</h3><p>Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°23</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('oreilly')"><img src="static/images/o'reillyinter.jpg"><div class="transfert-info"><h3>Nico O'Reilly</h3><p>Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°3</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('marmoush')"><img src="static/images/marmoushinter.jpg"><div class="transfert-info"><h3>Omar Marmoush</h3><p>Egypte 🇪🇬</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°22</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('cherki')"><img src="static/images/cherkiinter.jpg"><div class="transfert-info"><h3>Rayan Cherki</h3><p>France 🇫🇷</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°24</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('semenyo')"><img src="static/images/semenyointer.jpg"><div class="transfert-info"><h3>Antoine Semenyo</h3><p>Ghana 🇬🇭</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°11</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('doku')"><img src="static/images/dokuinter.jpg"><div class="transfert-info"><h3>Jérémy Doku</h3><p>Belgique 🇧🇪</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°11</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('haaland')"><img src="static/images/haalandinter.jpg"><div class="transfert-info"><h3>Erling Haaland</h3><p>Norvège 🇳🇴</p><p>Matchs : 1</p><p>Buts : 2</p><p>Passes D : 0</p><p class="transfert-date">N°9</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('ake')"><img src="static/images/akeinter.jpg"><div class="transfert-info"><h3>Nathan Aké</h3><p>Pays-Bas 🇳🇱</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°5</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('reijnders')"><img src="static/images/reijndersinter.jpg"><div class="transfert-info"><h3>Tijjani Reijnders</h3><p>Pays-Bas 🇳🇱</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°14</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('rodri')"><img src="static/images/rodriinter.jpg"><div class="transfert-info"><h3>Rodri</h3><p>Espagne 🇪🇸</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°16</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('dias')"><img src="static/images/diasinter.jpg"><div class="transfert-info"><h3>Ruben Dias</h3><p>Portugal 🇵🇹</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°3</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('nunes')"><img src="static/images/nunesinter.jpg"><div class="transfert-info"><h3>Matheus Nunes</h3><p>Portugal 🇵🇹</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°6</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('khusanov')"><img src="static/images/khusanovinter.jpg"><div class="transfert-info"><h3>Abdukodir Khusanov</h3><p>Ouzbékistan 🇺🇿</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°2</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('ait-nouri')"><img src="static/images/ait-nouriinter.jpg"><div class="transfert-info"><h3>Rayan Ait-Nouri</h3><p>Algérie 🇩🇿</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°15</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('akanji')"><img src="static/images/akanjiinter.jpg"><div class="transfert-info"><h3>Manuel Akanji</h3><p>Suisse 🇨🇭</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°5</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('gvardiol')"><img src="static/images/gvardiolinter.jpg"><div class="transfert-info"><h3>Josko Gvardiol</h3><p>Croatie 🇭🇷</p><p>Matchs : 0</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°4</p></div></div>
+            <div class="transfert-card" onclick="afficherJoueur('kovacic')"><img src="static/images/kovacicinter.jpg"><div class="transfert-info"><h3>Matéo Kovacic</h3><p>Croatie 🇭🇷</p><p>Matchs : 1</p><p>Buts : 0</p><p>Passes D : 0</p><p class="transfert-date">N°8</p></div></div>
+            
+        </div>
+
+        <div id="classement-recap" class="content-section">
+            <h2>Classement</h2>
+            <div class="transfert-card"><img src="static/images/premierleague.jpg"><div class="transfert-info"><h3>Premier League</h3><p>Position : 13ème</p><p>Points : 0</p><p>Différence : 0</p><p class="transfert-date">Journée n°0</p></div></div>
+            <div class="transfert-card"><img src="static/images/facup.jpg"><div class="transfert-info"><h3>FA Cup</h3><p>Position : 3ème tour</p><p class="statut en-lice">Statut : En lice</p><p class="transfert-date"></p></div></div>
+            <div class="transfert-card"><img src="static/images/carabaocup.jpg"><div class="transfert-info"><h3>Carabao Cup</h3><p>Position : 3ème tour</p><p class="statut en-lice">Statut : En lice</p><p class="transfert-date"></p></div></div>
+            <div class="transfert-card"><img src="static/images/communityshield.jpg"><div class="transfert-info"><h3>Community Shield</h3><p>Position : Finale</p><p class="statut en-lice">Statut : En lice</p><p class="transfert-date"></p></div></div>
+            <div class="transfert-card"><img src="static/images/championsleague.jpg"><div class="transfert-info"><h3>Champions League</h3><p>Position : Poules</p><p>Points : 0</p><p class="statut en-lice">Statut : En lice</p><p class="transfert-date"></p></div></div>
+            
+        </div>
+
+        <div id="joueur-solo" class="content-section">
+            <h2 id="nom-joueur"></h2>
+            <img id="photo" src="">
+            <div class="box-info">
+                <table>
+                    <tr><th>Âge</th><td id="s-age"></td></tr>
+                    <tr><th>Nationalité</th><td id="s-nat"></td></tr>
+                    <tr><th>Salaire / mois</th><td id="s-paye"></td></tr>
+                    <tr><th>Fin de contrat</th><td id="s-fin"></td></tr>
+                    <tr><th>Valeur</th><td id="s-valeur"></td></tr>
+                    <tr><th>Note EA Sports</th><td id="s-noteea"></td></tr>
+                </table>
+                <div class="bio-container">
+                    <strong>Biographie :</strong><br><br>
+                    <span id="s-bio"></span>
+                    <div class="stat-card">
+                        <span class="stat-number" id="s-buts">0</span>
+                        <span class="stat-label">⚽ Buts</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-number" id="s-passes">0</span>
+                        <span class="stat-label">👟 Passes D.</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-number" id="s-matchs">0</span>
+                        <span class="stat-label">🎮 Matchs</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-number" id="s-note">0.0</span>
+                        <span class="stat-label">⭐ Note</span>
+                    </div>
+                </div>
+            </div>
+
+        <section id="competitions-view">
+
+    <h2>🏆 Compétitions</h2>
+
+            <button onclick="afficherCompetition('premierleague')">
+                Premier League
+            </button>
+
+            <button onclick="afficherCompetition('ldc')">
+                Ligue des Champions
+            </button>
+
+            <button onclick="afficherCompetition('fa')">
+                FA Cup
+            </button>
+
+        </section>
+
+        <div id="position-actuelle-view" class="content-section">
+            <div class="titre-zone">📊 Positions Actuelles</div>
+            <div id="positions-container" class="centre-container">
+            <!-- Les cartes des compétitions vont se générer ici -->
+            </div>
+        </div>
+            
+        <div id="joueur-solo" class="content-section">
+            <h2 id="nom-joueur"></h2>
+            <img id="photo" src="" style="width:200px; border-radius:15px;">
+            <div class="box-info">
+                <p id="s-age"></p><p id="s-nat"></p><p id="s-paye"></p><p id="s-valeur"></p><p id="s-fin"></p><p id="s-noteea"></p>
+                <div class="bio-container" id="s-bio"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const firebaseConfig = { apiKey: "CLE", authDomain: "DOM", projectId: "ID", storageBucket: "BUCKET", messagingSenderId: "ID", appId: "APP" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        function checkPassword() {
+            const input = document.getElementById('site-password').value;
+            const error = document.getElementById('lock-error');
+            if (input === "Rider77") {
+                document.getElementById('lock-screen').style.display = 'none';
+            } else {
+                error.innerText = "Mot de passe incorrect ❌";
+            }
+        }
+
+        document.getElementById('site-password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        // --- AJOUT v1.00.42 : Touche Entrée pour le Quiz ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizInput = document.getElementById('quiz-answer');
+            if(quizInput) {
+                quizInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') verifierReponseQuiz();
+                });
+            }
+        });
+
+        const effectif = {
+            'bettinelli': { nom: "Marcus Bettinelli", poste: "Gardien", age: "33 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "177 000 €", fin: "30/06/2028", valeur: "0.3M €", noteea: "70", img: "13.jpg", bio: "Gardien expérimenté.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'donnarumma': { nom: "Gianluigi Donnarumma", poste: "Gardien", age: "27 ans", nat: "Italie 🇮🇹", paye: "1 230 000 €", fin: "30/06/2030", valeur: "45M €", noteea: "89", img: "25.jpg", bio: "Gardien d'envergure internationale.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'trafford': { nom: "James Trafford", poste: "Gardien", age: "23 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "250 000 €", fin: "30/06/2029", valeur: "25M €", noteea: "77", img: "1.jpg", bio: "Gardien prometteur.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'akanji': { nom: "Manuel Akanji", poste: "Défenseur", age: "30 ans", nat: "Suisse 🇨🇭", paye: "540 000", fin: "30/06/2027", valeur: "17M €", noteea: "83", img: "akanji.jpg", bio: "Défenseur impassable.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'ake': { nom: "Nathan Aké", poste: "Défenseur", age: "31 ans", nat: "Pays-Bas 🇳🇱", paye: "810 000 €", fin: "30/06/2027", valeur: "12M €", noteea: "82", img: "6.jpg", bio: "Polyvalence tactique exemplaire.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'alleyne': { nom: "Max Alleyne", poste: "Défenseur", age: "20 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "N/A", fin: "30/06/2030", valeur: "8M €", noteea: "68", img: "68.jpg", bio: "Espoir en défense centrale.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'aitnouri': { nom: "Rayan Ait-Nouri", poste: "Défenseur", age: "25 ans", nat: "Algérie 🇩🇿", paye: "151 000 €", fin: "30/06/2030", valeur: "40M €", noteea: "81", img: "21.jpg", bio: "Latéral percutant.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'dias': { nom: "Ruben Dias", poste: "Défenseur", age: "29 ans", nat: "Portugal 🇵🇹", paye: "1 200 000 €", fin: "30/06/2029", valeur: "55M €", noteea: "87", img: "3.jpg", bio: "Pilier défensif.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'guehi': { nom: "Marc Guéhi", poste: "Défenseur", age: "25 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "253 000 €", fin: "30/06/2031", valeur: "70M €", noteea: "84", img: "15.jpg", bio: "Nouvelle recrue solide.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'gvardiol': { nom: "Josko Gvardiol", poste: "Défenseur", age: "24 ans", nat: "Croatie 🇭🇷", paye: "833 000 €", fin: "30/06/2028", valeur: "70M €", noteea: "85", img: "24.jpg", bio: "Roc croate.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'khusanov': { nom: "Abdukodir Khusanov", poste: "Défenseur", age: "22 ans", nat: "Ouzbékistan 🇺🇿", paye: "96 000 €", fin: "30/06/2029", valeur: "50M €", noteea: "80", img: "45.jpg", bio: "Révélation ouzbèke.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'lewis': { nom: "Rico Lewis", poste: "Défenseur", age: "21 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "123 000 €", fin: "30/06/2030", valeur: "28M €", noteea: "77", img: "82.jpg", bio: "Futur cadre issu de l'académie.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'nunes': { nom: "Matheus Nunes", poste: "Défenseur", age: "27 ans", nat: "Portugal 🇵🇹", paye: "658 000 €", fin: "30/06/2028", valeur: "50M €", noteea: "82", img: "27.jpg", bio: "Défenseur puissant.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'oreilly': { nom: "Nico O'Reilly", poste: "Défenseur", age: "21 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "N/A", fin: "30/06/2030", valeur: "70M €", noteea: "81", img: "33.jpg", bio: "Pépite locale.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'reis': { nom: "Vitor Reis", poste: "Défenseur", age: "20 ans", nat: "Brésil 🇧🇷", paye: "200 000", fin: "30/06/2029", valeur: "30M €", noteea: "75", img: "22.jpg", bio: "Jeune talent brésilien.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'wilson-esbrand': { nom: "Joshua Wilson-Esbrand", poste: "Défenseur", age: "23 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "25 000", fin: "30/06/2027", valeur: "2.5M €", noteea: "67", img: "97.jpg", bio: "Pépite anglaise.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'cherki': { nom: "Rayan Cherki", poste: "Milieu", age: "22 ans", nat: "France 🇫🇷", paye: "333 000 €", fin: "30/06/2030", valeur: "90M €", noteea: "84", img: "10.jpg", bio: "Magicien français.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'echeverri': { nom: "Claudio Echeverri", poste: "Milieu", age: "20 ans", nat: "Argentine 🇦🇷", paye: "78 000", fin: "30/06/2028", valeur: "15M €", noteea: "74", img: "30.jpg", bio: "Jeune pépite argentine.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'foden': { nom: "Phil Foden", poste: "Milieu", age: "26 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "1 170 000 €", fin: "30/06/2027", valeur: "70M €", noteea: "85", img: "47.jpg", bio: "L'enfant chéri de Stockport.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'gonzalez': { nom: "Nico Gonzalez", poste: "Milieu", age: "24 ans", nat: "Espagne 🇪🇸", paye: "314 000 €", fin: "30/06/2030", valeur: "40M €", noteea: "81", img: "14.jpg", bio: "Technique espagnole.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'grealish': { nom: "Jack Grealish", poste: "Milieu", age: "20 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "1 100 000", fin: "30/06/2027", valeur: "20M €", noteea: "81", img: "grealish.jpg", bio: "Joueur d'expérience.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'kovacic': { nom: "Matéo Kovacic", poste: "Milieu", age: "32 ans", nat: "Croatie 🇭🇷", paye: "760 000 €", fin: "30/06/2027", valeur: "10M €", noteea: "82", img: "8.jpg", bio: "Expérience croate.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'nypan': { nom: "Sverre Nypan", poste: "Milieu", age: "19 ans", nat: "Norvège 🇳🇴", paye: "N/A", fin: "30/06/2030", valeur: "13M €", noteea: "70", img: "41.jpg", bio: "Futur maître du milieu.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'phillips': { nom: "Kalvin Phillips", poste: "Milieu", age: "30 ans", nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿", paye: "600 000", fin: "30/06/2028", valeur: "2.5M €", noteea: "74", img: "44.jpg", bio: "Joueur d'expérience.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'reijnders': { nom: "Tijjani Reijnders", poste: "Milieu", age: "27 ans", nat: "Pays-Bas 🇳🇱", paye: "374 000 €", fin: "30/06/2030", valeur: "50M €", noteea: "85", img: "4.jpg", bio: "Milieu élégant.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'rodri': { nom: "Rodri", poste: "Milieu", age: "29 ans", nat: "Espagne 🇪🇸", paye: "1 110 000 €", fin: "30/06/2028", valeur: "50M €", noteea: "89", img: "16.jpg", bio: "Ballon d'Or 2024. Le métronome.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'doku': { nom: "Jérémy Doku", poste: "Attaquant", age: "24 ans", nat: "Belgique 🇧🇪", paye: "253 000 €", fin: "30/06/2028", valeur: "75M €", noteea: "84", img: "11.jpg", bio: "Vitesse pure.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'haaland': { nom: "Erling Haaland", poste: "Attaquant", age: "25 ans", nat: "Norvège 🇳🇴", paye: "2 570 000 €", fin: "30/06/2034", valeur: "200M €", noteea: "91", img: "9.jpg", bio: "Phénomène offensif norvégien.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'marmoush': { nom: "Omar Marmoush", poste: "Attaquant", age: "27 ans", nat: "Egypte 🇪🇬", paye: "1 330 000 €", fin: "30/06/2029", valeur: "50M €", noteea: "83", img: "7.jpg", bio: "Attaquant égyptien polyvalent.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'savinho': { nom: "Savinho", poste: "Attaquant", age: "22 ans", nat: "Brésil 🇧🇷", paye: "390 000 €", fin: "30/06/2031", valeur: "35M €", noteea: "81", img: "26.jpg", bio: "Dribbleur brésilien électrisant.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+            'semenyo': { nom: "Antoine Semenyo", poste: "Attaquant", age: "26 ans", nat: "Ghana 🇬🇭", paye: "760 000 €", fin: "30/06/2031", valeur: "80M €", noteea: "84", img: "42.jpg", bio: "Puissance offensive brute.", matchs: 0, buts: 0, passes: 0, note: 0.0 },
+        };
+
+        const centreFormation = {
+    gardiens: [
+        {
+            nom: "Spike Brits",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Gardien",
+            img: "gardienspike.jpg",
+            anniv: "24/06/2007"
+        },
+        {
+            nom: "Oliver Whatmuff",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Gardien",
+            img: "gardienoliver.jpg",
+            anniv: "06/11/2007"
+        },
+        {
+            nom: "Jack Wint",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Gardien",
+            img: "gardienjack.jpg",
+            anniv: "08/10/2006"
+        }
+    ],
+    defenseurs: [
+        {
+            nom: "Finley Burns",
+            age: "22 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurfinley.jpg",
+            anniv: "17/06/2003"
+        },
+        {
+            nom: "Ezra Carrington",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurezra.jpg",
+            anniv: "16/12/2005"
+        },
+        {
+            nom: "Tomas Galvez",
+            age: "21 ans",
+            nat: "Finlande 🇫🇮",
+            poste: "Défenseur",
+            img: "defenseurtomas.jpg",
+            anniv: "28/01/2005"
+        },
+        {
+            nom: "Matty Henderson-Hall",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurmatty.jpg",
+            anniv: "08/12/2006"
+        },
+        {
+            nom: "Luke Mbete",
+            age: "22 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurluke.jpg",
+            anniv: "18/09/2003"
+        },
+        {
+            nom: "Christian McFarlane",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurchristian.jpg",
+            anniv: "25/01/2007"
+        },
+        {
+            nom: "Stephen Mfuni",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurstephen.jpg",
+            anniv: "12/02/2008"
+        },
+        {
+            nom: "Brooklyn Nfonkeu",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurbrooklyn.jpg",
+            anniv: "01/07/2007"
+        },
+        {
+            nom: "Kian Noble",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurkian.jpg",
+            anniv: "26/02/2007"
+        },
+        {
+            nom: "Harrison Parker",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurharrison.jpg",
+            anniv: "22/09/2006"
+        },
+        {
+            nom: "Lakyle Samuel",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurlakyle.jpg",
+            anniv: "06/05/2006"
+        },
+        {
+            nom: "Jahmai Simpson-Pusey",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurjahmai.jpg",
+            anniv: "04/11/2005"
+        },
+        {
+            nom: "Isaac Smith",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Défenseur",
+            img: "defenseurisaac.jpg",
+            anniv: "26/07/2005"
+        },
+        {
+            nom: "Rhys Thomas",
+            age: "19 ans",
+            nat: "Pays de Galles 🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+            poste: "Défenseur",
+            img: "defenseurrhys.jpg",
+            anniv: "05/09/2006"
+        }
+    ],
+    milieux: [
+        {
+            nom: "Isaiah Dada-Mascoll",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Milieu",
+            img: "milieuisaiah.jpg",
+            anniv: "24/05/2006"
+        },
+        {
+            nom: "Femi Fapetu",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Milieu",
+            img: "milieufemi.jpg",
+            anniv: "04/08/2007"
+        },
+        {
+            nom: "Charlie Gray",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Milieu",
+            img: "milieucharlie.jpg",
+            anniv: "22/02/2006"
+        },
+        {
+            nom: "Jaden Heskey",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Milieu",
+            img: "milieujaden.jpg",
+            anniv: "17/12/2005"
+        },
+        {
+            nom: "Divine Mukasa",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Milieu",
+            img: "milieudivine.jpg",
+            anniv: "22/08/2007"
+        }
+    ],
+    attaquants: [
+        {
+            nom: "Luca Fletcher",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantluka.jpg",
+            anniv: "18/04/2007"
+        },
+        {
+            nom: "Reighan Heskey",
+            age: "18 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantreighan.jpg",
+            anniv: "19/01/2008"
+        },
+        {
+            nom: "Emilio Lawrence",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantemilio.jpg",
+            anniv: "20/09/2005"
+        },
+        {
+            nom: "Ryan McAidoo",
+            age: "17 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantryan.jpg",
+            anniv: "24/06/2008"
+        },
+        {
+            nom: "Divin Mubama",
+            age: "21 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantdivin.jpg",
+            anniv: "06/09/2007"
+        },
+        {
+            nom: "Ashton Muir",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantashton.jpg",
+            anniv: "06/09/2007"
+        },
+        {
+            nom: "Joel Ndala",
+            age: "20 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantjoel.jpg",
+            anniv: "31/05/2006"
+        },
+        {
+            nom: "Mahamadou Sangaré",
+            age: "19 ans",
+            nat: "France 🇫🇷",
+            poste: "Attaquant",
+            img: "attaquantmahamadou.jpg",
+            anniv: "06/03/2007"
+        },
+        {
+            nom: "Matty Warhurst",
+            age: "19 ans",
+            nat: "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            poste: "Attaquant",
+            img: "attaquantmatty.jpg",
+            anniv: "25/09/2006"
+        }
+    ]
+};
+
+        const joueursDraft = Object.values(effectif).map(j => ({
+    nom: j.nom,
+    note: parseInt(j.noteea) || 60,
+    prix: parseFloat(
+        String(j.valeur)
+            .replace("M €","")
+            .replace(",",".")
+    ) || 1,
+    img: j.img
+}));
+
+        function chargerPositionsActuelles() {
+            const container = document.getElementById('positions-container');
+            container.innerHTML = ""; // On vide le container
+            
+            competitionsActuelles.forEach(c => {
+                container.innerHTML += `
+                <div class="centre-card">
+                    <img src="static/images/${c.img}" alt="${c.nom}">
+                    <div class="centre-info">
+                        <h3>${c.nom}</h3>
+                        <p><strong>🏆 Position :</strong> ${c.classement}</p>
+                        <p><strong>📅 Avancement :</strong> Match n°${c.matchNumero}</p>
+                        <p><strong>📝 Statut :</strong> ${c.bio}</p>
+                    </div>
+                </div>
+                `;
+            });
+            showSection('position-actuelle-view');
+        }
+
+        function toggleMenu(event) { event.stopPropagation(); document.getElementById('menu').classList.toggle('ouvert'); }
+        function toggleSubMenu(id) { document.getElementById(id).classList.toggle('show'); }
+        function showSection(id) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.sous-menu').forEach(sm => sm.classList.remove('show'));
+            document.getElementById('menu').classList.remove('ouvert');
+            selectedSpotElement = null; 
+            document.querySelectorAll('.player-spot').forEach(s => s.classList.remove('selected'));
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menu');
+            const btnMenu = document.getElementById('btn-menu');
+            if (menu.classList.contains('ouvert') && !menu.contains(event.target) && event.target !== btnMenu) {
+                document.querySelectorAll('.sous-menu').forEach(sm => sm.classList.remove('show'));
+                menu.classList.remove('ouvert');
+            }
+        });
+
+        function afficherJoueur(id) {
+            const j = effectif[id]; if(!j) return;
+            
+            // RESTAURATION DES LABELS ET AFFICHAGES ORIGINAUX
+            document.getElementById('s-age').previousElementSibling.innerText = "Âge";
+            document.getElementById('s-nat').previousElementSibling.innerText = "Nationalité";
+            document.getElementById('s-paye').parentNode.style.display = "";
+            document.getElementById('s-fin').parentNode.style.display = "";
+            document.getElementById('s-valeur').parentNode.style.display = "";
+            document.getElementById('s-noteea').parentNode.style.display = "";
+            const statsBlock = document.getElementById('s-matchs')?.parentNode?.parentNode;
+            if (statsBlock) statsBlock.style.display = "";
+
+            // Remplissage des données du joueur
+            document.getElementById('nom-joueur').innerText = j.nom;
+            document.getElementById('s-age').innerText = j.age;
+            document.getElementById('s-nat').innerText = j.nat;
+            document.getElementById('s-paye').innerText = j.paye;
+            document.getElementById('s-fin').innerText = j.fin;
+            document.getElementById('s-valeur').innerText = j.valeur;
+            document.getElementById('s-noteea').innerText = j.noteea;
+            document.getElementById('s-bio').innerText = j.bio;
+            document.getElementById('photo').src = "static/images/" + j.img;
+            document.getElementById('s-buts').innerText = j.buts || 0;
+            document.getElementById('s-passes').innerText = j.passes || 0;
+            document.getElementById('s-matchs').innerText = j.matchs || 0;
+            document.getElementById('s-note').innerText = j.note || "0.0";
+            showSection('joueur-solo');
+        }
+        
+let bonusJoueur = "";
+let bonusBot = "";
+let draftPioche = [];
+
+let draftBudgetJoueur = 250;
+let draftBudgetBot = 250;
+
+
+let bonusSautJoueur = 2;
+let bonusSautBot = 0;
+
+let bonusBudgetJoueur = true;
+let bonusReductionJoueur = true;
+let reductionActive = false;
+let bonusReductionBot = false;
+// BONUS SPÉCIAUX (15% de chance)
+let bonusSpecialJoueur = null;
+let bonusSpecialBot = null;
+
+document.getElementById("btn-sauter").disabled = true;
+document.getElementById("btn-sauter").innerText = "Sauter";
+
+let draftEquipeJoueur = [];
+let draftEquipeBot = [];
+
+let joueurDraftActuel = null;
+
+let enchereActuelle = 0;
+let proprietaireEnchere = null;
+        
+let botPrixMax = 0;
+let premierJoueur = "joueur";
+
+function melangerTableau(tableau){
+
+    for(let i = tableau.length - 1; i > 0; i--){
+
+        const j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        [tableau[i], tableau[j]] =
+        [tableau[j], tableau[i]];
+    }
+
+    return tableau;
 }
-</script>
 
+function ouvrirDraft(){
+
+    if(typeof showSection === "function"){
+        showSection("draft-view");
+    }
+
+    document.getElementById(
+        "zone-restart"
+    ).style.display = "none";
+
+    // Réinitialisation budgets
+    draftBudgetJoueur = 250;
+    draftBudgetBot = 250;
+
+    const bonusPossibles = [
+    "budget",
+    "reduction",
+    "doubleSaut"
+];
+
+bonusJoueur =
+    bonusPossibles[
+        Math.floor(
+            Math.random() * bonusPossibles.length
+        )
+    ];
+
+bonusBot =
+    bonusPossibles[
+        Math.floor(
+            Math.random() * bonusPossibles.length
+        )
+    ];
+
+    // BONUS SPECIAUX (15%)
+bonusSpecialJoueur = genererBonusSpecial();
+bonusSpecialBot = genererBonusSpecial();
+
+if(bonusSpecialJoueur === "cash"){
+    ajouterHistorique("🎁 Bonus spécial : +50 M€");
+}
+
+if(bonusSpecialJoueur === "free"){
+    ajouterHistorique("🎁 Bonus spécial : achat gratuit");
+}
+
+if(bonusSpecialJoueur === "vol"){
+    ajouterHistorique("🎁 Bonus spécial : vol de joueur");
+}
+
+if(bonusSpecialJoueur){
+    ajouterHistorique("🎁 Bonus spécial joueur débloqué !");
+}
+
+if(bonusSpecialBot){
+    ajouterHistorique("🤖 Le bot prépare un bonus spécial...");
+}
+
+    // Réinitialisation équipes
+    draftEquipeJoueur = [];
+    draftEquipeBot = [];
+
+    // Réinitialisation bonus Sauter
+        bonusSautJoueur = 0;
+        bonusSautBot = 0;
+
+        bonusBudgetJoueur = false;
+        bonusReductionJoueur = false;
+        bonusReductionBot = false;
+        reductionActive = false;
+
+        // Bonus joueur
+
+if(bonusJoueur === "budget"){
+    bonusBudgetJoueur = true;
+}
+
+if(bonusJoueur === "reduction"){
+    bonusReductionJoueur = true;
+}
+
+if(bonusJoueur === "doubleSaut"){
+    bonusSautJoueur = 2;
+}
+
+// Bonus bot
+
+if(bonusBot === "budget"){
+    draftBudgetBot += 20;
+}
+
+if(bonusBot === "doubleSaut"){
+    bonusSautBot = 2;
+}
+
+if(bonusBot === "reduction"){
+    bonusReductionBot = true;
+}
+
+        const btnSaut = document.getElementById("btn-sauter");
+        btnSaut.disabled = false;
+        btnSaut.innerText = "🗑️ Sauter";
+        document.getElementById(
+            "btn-budget"
+        ).disabled = false;
+
+        document.getElementById(
+            "btn-budget"
+        ).innerText = "💸 +20 M€";
+
+        document.getElementById(
+            "btn-reduction"
+        ).disabled = false;
+
+        document.getElementById(
+            "btn-reduction"
+        ).innerText = "🎯 -50%";
+
+        document.getElementById(
+            "btn-sauter"
+        ).disabled = false;
+
+        document.getElementById(
+            "btn-sauter"
+        ).innerText =
+        "🗑️ Saut (2)";
+
+        // Cache tous les bonus
+document.getElementById("btn-budget").style.display = "none";
+document.getElementById("btn-reduction").style.display = "none";
+document.getElementById("btn-sauter").style.display = "none";
+
+// Affiche uniquement le bonus obtenu
+if (bonusJoueur === "budget") {
+    document.getElementById("btn-budget").style.display = "inline-block";
+}
+
+if (bonusJoueur === "reduction") {
+    document.getElementById("btn-reduction").style.display = "inline-block";
+}
+
+if (bonusJoueur === "doubleSaut") {
+    document.getElementById("btn-sauter").style.display = "inline-block";
+}
+
+    // Réinitialisation enchères
+    joueurDraftActuel = null;
+    enchereActuelle = 0;
+    proprietaireEnchere = null;
+
+    // Nouvelle pioche mélangée
+    draftPioche = melangerTableau(
+        [...joueursDraft]
+    );
+
+    // Nettoyage interface
+    document.getElementById(
+        "draft-resultat"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "historique-enchere"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "draft-carte"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "montant-enchere"
+    ).value = "";
+
+    if(bonusJoueur === "budget"){
+    ajouterHistorique("🎁 Ton bonus : 💸 +20 M€");
+}
+
+if(bonusJoueur === "reduction"){
+    ajouterHistorique("🎁 Ton bonus : 🎯 Réduction 50%");
+}
+
+if(bonusJoueur === "doubleSaut"){
+    ajouterHistorique("🎁 Ton bonus : 🔥 Double saut");
+}
+
+ajouterHistorique(
+    "🤖 Le bot reçoit un bonus secret"
+);
+
+    // Mise à jour affichage
+    majDraft();
+
+    // Nouveau draft
+    prochainJoueurDraft();
+}
+        
+function prochainJoueurDraft(){
+
+    if(joueurDraftActuel !== null){
+    return;
+}
+
+    document.getElementById(
+        "btn-encherir"
+    ).disabled = false;
+
+    document.getElementById(
+        "btn-abandonner"
+    ).disabled = false;
+
+    // Si un trio est terminé, on complète automatiquement l'autre
+    if(
+        draftEquipeJoueur.length >= 3 &&
+        draftEquipeBot.length < 3
+    ){
+
+        while(
+    draftEquipeBot.length < 3 &&
+    draftPioche.length > 0
+){
+
+    draftEquipeBot.push(
+        draftPioche.shift()
+    );
+
+    draftBudgetBot -= 0;
+}
+
+majDraft();
+
+finDraft();
+return;
+    }
+
+    if(
+        draftEquipeBot.length >= 3 &&
+        draftEquipeJoueur.length < 3
+    ){
+
+        while(
+    draftEquipeJoueur.length < 3 &&
+    draftPioche.length > 0
+){
+
+    draftEquipeJoueur.push(
+        draftPioche.shift()
+    );
+
+    draftBudgetJoueur -= 0;
+}
+
+majDraft();
+
+finDraft();
+return;
+    }
+
+    // Les deux trios sont complets
+    if(
+        draftEquipeJoueur.length >= 3 &&
+        draftEquipeBot.length >= 3
+    ){
+        finDraft();
+        return;
+    }
+
+    // Sécurité si la pioche est vide
+    if(draftPioche.length === 0){
+        finDraft();
+        return;
+    }
+
+    joueurDraftActuel =
+    draftPioche.shift();
+
+    // BONUS SPECIAL JOUEUR
+if(bonusSpecialJoueur){
+    ajouterHistorique("🎁 Tu as un bonus spécial disponible !");
+    document.getElementById("btn-bonus-special").style.display = "inline-block";
+}
+
+// BONUS SPECIAL BOT
+if(bonusSpecialBot){
+
+    let utiliser = false;
+
+    if(
+        bonusSpecialBot === "free" &&
+        joueurDraftActuel.note >= 88
+    ){
+        utiliser = true;
+    }
+
+    if(
+        bonusSpecialBot === "cash" &&
+        draftBudgetBot <= 80
+    ){
+        utiliser = true;
+    }
+
+    if(
+        bonusSpecialBot === "vol" &&
+        draftEquipeJoueur.length >= 2
+    ){
+        utiliser = true;
+    }
+
+    if(utiliser){
+
+        if(bonusSpecialBot === "cash"){
+            bonusCash("bot");
+        }
+
+        if(bonusSpecialBot === "free"){
+            acheterGratuit("bot");
+            bonusSpecialBot = null;
+            return;
+        }
+
+        if(bonusSpecialBot === "vol"){
+            volerJoueur("bot");
+        }
+
+        bonusSpecialBot = null;
+    }
+}
+
+    if(
+    draftBudgetJoueur <= 0 &&
+    draftBudgetBot <= 0
+){
+    ajouterHistorique(
+        `🗑️ ${joueurDraftActuel.nom} part (plus aucun budget)`
+    );
+
+    prochainJoueurDraft();
+    return;
+}
+
+premierJoueur =
+    premierJoueur === "joueur"
+    ? "bot"
+    : "joueur";
+    
+document.getElementById(
+        "historique-enchere"
+    ).innerHTML = "";
+    
+enchereActuelle = 0;
+proprietaireEnchere = null;
+
+ajouterHistorique(
+    `💰 Prix de départ : 0 M€`
+);
+
+    botPrixMax = Math.min(
+    draftBudgetBot,
+    joueurDraftActuel.prix * (
+        1.3 + Math.random() * 1.2
+    )
+);
+
+    document.getElementById(
+        "montant-enchere"
+    ).value = "";
+
+    let couleur = "#cd7f32"; // bronze
+
+if(joueurDraftActuel.note >= 85){
+    couleur = "#c0c0c0"; // argent
+}
+
+if(joueurDraftActuel.note >= 89){
+    couleur = "#ffd700"; // or
+}
+
+const nomImage =
+    joueurDraftActuel.nom
+        .split(" ")
+        .pop()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    
+document.getElementById(
+    "draft-carte"
+).innerHTML = `
+<div style="
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+">
+
+    <div
+        class="draft-player-card"
+        style="
+            border:4px solid ${couleur};
+            width:350px;
+        "
+    >
+        <h3>${joueurDraftActuel.nom}</h3>
+        <p>💰 Valeur estimée : ${joueurDraftActuel.prix} M€</p>
+        <p>⭐ Note EA : ${joueurDraftActuel.note}</p>
+    </div>
+
+    <img
+        src="static/images/${joueurDraftActuel.img}"
+        alt="${joueurDraftActuel.nom}"
+        style="
+            width:180px;
+            height:220px;
+            object-fit:cover;
+            border-radius:15px;
+            box-shadow:0 0 15px rgba(0,0,0,0.5);
+        "
+    >
+</div>
+`;
+    if(premierJoueur === "bot"){
+
+    setTimeout(
+        tourBotInitial,
+        500
+    );
+}
+
+}
+
+function bonusCash(utilisateur){
+    if(utilisateur === "joueur"){
+        draftBudgetJoueur += 50;
+        ajouterHistorique("💰 +50M € ajoutés à ton budget !");
+    } else {
+        draftBudgetBot += 50;
+        ajouterHistorique("🤖 +50M € pour le bot !");
+    }
+
+    majDraft(); // ✅ IMPORTANT : synchronise l'affichage
+}
+
+function acheterGratuit(utilisateur){
+    if(!joueurDraftActuel) return;
+
+    if(utilisateur === "joueur"){
+        draftEquipeJoueur.push(joueurDraftActuel);
+        ajouterHistorique(`🆓 ${joueurDraftActuel.nom} rejoint ton équipe gratuitement !`);
+    } else {
+        draftEquipeBot.push(joueurDraftActuel);
+        ajouterHistorique(`🤖 ${joueurDraftActuel.nom} rejoint le bot gratuitement !`);
+    }
+
+    joueurDraftActuel = null;
+    majDraft();
+    setTimeout(prochainJoueurDraft, 1500);
+}
+
+function utiliserBonusSpecialBot(){
+
+    if(!bonusSpecialBot || !joueurDraftActuel) return;
+
+    const r = Math.random();
+
+    if(r < 0.33){
+        bonusCash("bot");
+    }
+    else if(r < 0.66){
+        acheterGratuit("bot");
+    }
+    else{
+        volerJoueur("bot");
+    }
+
+    bonusSpecialBot = null;
+}
+        
+function volerJoueur(utilisateur){
+
+    if(!joueurDraftActuel) return;
+
+    if(
+        utilisateur === "bot" &&
+        draftEquipeBot.length >= 3
+    ){
+        return;
+    }
+
+    if(
+        utilisateur === "joueur" &&
+        draftEquipeJoueur.length >= 3
+    ){
+        return;
+    }
+
+    let cibleEquipe =
+        (utilisateur === "joueur")
+        ? draftEquipeBot
+        : draftEquipeJoueur;
+
+    if(cibleEquipe.length === 0){
+        ajouterHistorique("❌ Aucun joueur à voler");
+        return;
+    }
+    
+    if(!joueurDraftActuel) return;
+
+    let meilleurIndex = 0;
+
+for(let i = 1; i < cibleEquipe.length; i++){
+
+    if(
+        cibleEquipe[i].note >
+        cibleEquipe[meilleurIndex].note
+    ){
+        meilleurIndex = i;
+    }
+}
+
+const vole =
+    cibleEquipe.splice(
+        meilleurIndex,
+        1
+    )[0];
+
+    if(utilisateur === "joueur"){
+        draftEquipeJoueur.push(vole);
+        ajouterHistorique(`🪄 Tu voles ${vole.nom} au bot !`);
+    } else {
+        draftEquipeBot.push(vole);
+        ajouterHistorique(`🤖 Le bot te vole ${vole.nom} !`);
+    }
+
+    majDraft();
+}
+
+function utiliserBonusSpecial(){
+
+    if(!bonusSpecialJoueur || !joueurDraftActuel) return;
+
+    if(bonusSpecialJoueur === "cash"){
+        bonusCash("joueur");
+    }
+    else if(bonusSpecialJoueur === "free"){
+        acheterGratuit("joueur");
+    }
+    else if(bonusSpecialJoueur === "vol"){
+        volerJoueur("joueur");
+    }
+
+    bonusSpecialJoueur = null;
+
+    document.getElementById(
+        "btn-bonus-special"
+    ).style.display = "none";
+}
+    
+function recommencerDraft(){
+
+    ouvrirDraft();
+
+}
+
+function utiliserBonusSaut(){
+
+    if(bonusSautJoueur <= 0){
+        alert("Plus de saut disponible.");
+        return;
+    }
+
+    bonusSautJoueur--;
+
+    document.getElementById(
+        "btn-sauter"
+    ).innerText =
+    `🗑️ Saut (${bonusSautJoueur})`;
+
+    if(bonusSautJoueur === 0){
+
+    document.getElementById(
+        "btn-sauter"
+    ).disabled = true;
+
+    document.getElementById(
+        "btn-sauter"
+    ).innerText =
+    "❌ Plus de saut";
+}
+
+    ajouterHistorique(
+        `🗑️ ${joueurDraftActuel.nom} parti`
+    );
+
+    joueurDraftActuel = null;
+
+    setTimeout(
+        prochainJoueurDraft,
+        1000
+    );
+}
+
+function utiliserBonusBudget(){
+
+    if(!bonusBudgetJoueur){
+        alert("Bonus déjà utilisé.");
+        return;
+    }
+
+    bonusBudgetJoueur = false;
+
+    draftBudgetJoueur += 20;
+
+    document.getElementById(
+        "btn-budget"
+    ).disabled = true;
+
+    document.getElementById(
+        "btn-budget"
+    ).innerText = "❌ Utilisé";
+
+    ajouterHistorique(
+        "💸 Bonus budget : +20 M€"
+    );
+
+    majDraft();
+}
+
+function activerReduction(){
+
+    if(!bonusReductionJoueur){
+        alert("Bonus déjà utilisé.");
+        return;
+    }
+
+    bonusReductionJoueur = false;
+    reductionActive = true;
+
+    document.getElementById(
+        "btn-reduction"
+    ).disabled = true;
+
+    document.getElementById(
+        "btn-reduction"
+    ).innerText = "🎯 Actif";
+
+    ajouterHistorique(
+        "🎯 Réduction 50% activée"
+    );
+}
+     
+function faireEnchere(){
+
+    const montant =
+        Number(
+            document.getElementById(
+                "montant-enchere"
+            ).value
+        );
+
+    if(
+        document.getElementById(
+            "montant-enchere"
+        ).value === ""
+    ){
+        alert("Entre une somme (0 autorisé).");
+        return;
+    }
+
+// Première enchère
+if(
+    proprietaireEnchere === null &&
+    montant < enchereActuelle
+){
+    alert(
+        `L'offre minimale est ${enchereActuelle} M€`
+    );
+    return;
+}
+
+// Surenchère
+if(
+    proprietaireEnchere !== null &&
+    montant <= enchereActuelle
+){
+    alert(
+        "L'enchère doit être supérieure à l'offre actuelle."
+    );
+    return;
+}
+
+const coutReel =
+    reductionActive
+        ? Math.ceil(montant / 2)
+        : montant;
+
+if(coutReel > draftBudgetJoueur){
+    alert("Budget insuffisant.");
+    return;
+}
+    enchereActuelle = montant;
+    proprietaireEnchere = "joueur";
+
+    ajouterHistorique(
+        `👤 Toi : ${montant} M€`
+    );
+
+    tourBotEnchere();
+}
+
+function tourBotEnchere(){
+
+    if(draftEquipeBot.length >= 3){
+        proprietaireEnchere = "joueur";
+        gagnerJoueur();
+        return;
+    }
+
+    if(joueurDraftActuel.note < 80){
+        ajouterHistorique("🤖 Bot abandonne");
+        gagnerJoueur();
+        return;
+    }
+
+    let offreBot =
+        enchereActuelle +
+        Math.floor(Math.random() * 20) +
+        5;
+
+    // Le joueur ne peut plus suivre
+    if(draftBudgetJoueur <= enchereActuelle){
+        offreBot = enchereActuelle + 1;
+    }
+
+    if(
+        offreBot <= botPrixMax &&
+        offreBot <= draftBudgetBot
+    ){
+
+        enchereActuelle = offreBot;
+
+        proprietaireEnchere = "bot";
+
+        ajouterHistorique(
+            `🤖 Bot : ${offreBot} M€`
+        );
+
+    }else{
+
+        ajouterHistorique(
+            "🤖 Bot abandonne"
+        );
+
+        proprietaireEnchere = "joueur";
+        gagnerJoueur();
+    }
+}
+
+function abandonnerEnchere(){
+
+    // Si personne n'a encore enchéri
+    if(proprietaireEnchere === null){
+
+        alert(
+            "Tu dois d'abord faire une offre (même 0 M€)."
+        );
+
+        return;
+    }
+
+    if(
+        proprietaireEnchere === "bot"
+    ){
+
+        gagnerJoueur();
+
+    }else{
+
+        tourBotEnchere();
+
+    }
+}
+
+function gagnerJoueur(){
+
+    if(!joueurDraftActuel){
+        return;
+    }
+
+    if(
+    proprietaireEnchere === "joueur"
+){
+
+    if(draftEquipeJoueur.length < 3){
+
+        draftEquipeJoueur.push(
+            joueurDraftActuel
+        );
+
+    }
+
+    let prixFinal = enchereActuelle;
+
+if(reductionActive){
+
+    prixFinal =
+        Math.ceil(
+            enchereActuelle / 2
+        );
+
+    reductionActive = false;
+
+    ajouterHistorique(
+        `🎯 Réduction appliquée : ${prixFinal} M€`
+    );
+}
+
+draftBudgetJoueur -= prixFinal;
+
+    ajouterHistorique(
+        `🏆 ${joueurDraftActuel.nom} rejoint ton équipe`
+    );
+}
+
+    else if(
+    proprietaireEnchere === "bot"
+){
+
+    if(draftEquipeBot.length < 3){
+
+        draftEquipeBot.push(
+            joueurDraftActuel
+        );
+
+    }
+
+    let prixBot = enchereActuelle;
+
+    if(bonusReductionBot){
+
+        prixBot = Math.ceil(prixBot / 2);
+
+        bonusReductionBot = false;
+
+        ajouterHistorique(
+            `🤖 utilise son bonus réduction : ${prixBot} M€`
+        );
+    }
+
+    draftBudgetBot -= prixBot;
+
+    ajouterHistorique(
+        `🤖 ${joueurDraftActuel.nom} rejoint le bot`
+    );
+}
+
+    majDraft();
+
+    joueurDraftActuel = null;
+
+    document.getElementById(
+        "btn-encherir"
+    ).disabled = true;
+
+    document.getElementById(
+        "btn-abandonner"
+    ).disabled = true;
+
+    setTimeout(
+        prochainJoueurDraft,
+        2000
+    );
+}
+
+        
+function afficherJoueurDraft(){
+    if(!joueurDraftActuel) return;
+
+    document.getElementById("draft-carte").innerHTML = `
+    <div>
+        <h3>${joueurDraftActuel.nom}</h3>
+        <p>💰 ${joueurDraftActuel.prix} M€</p>
+        <p>⭐ ${joueurDraftActuel.note}</p>
+    </div>
+    `;
+}        
+
+function ajouterHistorique(txt){
+
+    document.getElementById(
+        "historique-enchere"
+    ).innerHTML +=
+        `<div>${txt}</div>`;
+}
+        
+function majDraft(){
+
+    document.getElementById(
+        "budget-joueur"
+    ).innerText =
+        draftBudgetJoueur.toFixed(1);
+
+    document.getElementById(
+        "budget-bot"
+    ).innerText =
+        draftBudgetBot.toFixed(1);
+
+    document.getElementById(
+        "liste-joueur-draft"
+    ).innerHTML =
+        draftEquipeJoueur
+        .map(
+            j => `<li>${j.nom} (${j.note})</li>`
+        )
+        .join("");
+
+    document.getElementById(
+        "liste-bot-draft"
+    ).innerHTML =
+        draftEquipeBot
+        .map(
+            j => `<li>${j.nom} (${j.note})</li>`
+        )
+        .join("");
+}
+        
+function finDraft(){
+
+    const valeurJoueur =
+    draftEquipeJoueur.reduce(
+        (total, j) => total + j.prix,
+        0
+    );
+
+const valeurBot =
+    draftEquipeBot.reduce(
+        (total, j) => total + j.prix,
+        0
+    );
+
+const scoreJoueur =
+    valeurJoueur +
+    (draftBudgetJoueur / 50);
+
+const scoreBot =
+    valeurBot +
+    (draftBudgetBot / 50);
+
+    let resultat = "";
+
+    if(scoreJoueur > scoreBot){
+        resultat =
+        "🏆 Tu remportes le Draft";
+    }
+    else if(scoreBot > scoreJoueur){
+        resultat =
+        "🤖 Le bot remporte le Draft";
+    }
+    else{
+        resultat =
+        "🤝 Égalité";
+    }
+
+    document.getElementById(
+        "draft-resultat"
+    ).innerHTML = `
+        <h2>Fin de partie</h2>
+        <p>Points Joueur : ${scoreJoueur.toFixed(1)} M€</p>
+        <p>Points Bot : ${scoreBot.toFixed(1)} M€</p>
+        <h3>${resultat}</h3>
+    `;
+
+    document.getElementById(
+    "zone-restart"
+).style.display = "block";
+    
+}
+
+        function tourBotInitial(){
+
+            if(
+    bonusSautBot > 0 &&
+    joueurDraftActuel.prix <= 15 &&
+    joueurDraftActuel.note < 78
+){
+
+    bonusSautBot--;
+
+    ajouterHistorique(
+        `🤖 utilise son bonus SAUT sur ${joueurDraftActuel.nom}`
+    );
+
+    joueurDraftActuel = null;
+
+    setTimeout(
+        prochainJoueurDraft,
+        1500
+    );
+
+    return;
+}
+
+    if(draftEquipeBot.length >= 3){
+        return;
+    }
+
+    let miseDepart;
+
+if(joueurDraftActuel.note < 80){
+
+    // Joueur peu intéressant
+    miseDepart = enchereActuelle + 1;
+
+}else if(joueurDraftActuel.note < 85){
+
+    // Joueur correct
+    miseDepart =
+        enchereActuelle +
+        1 +
+        Math.floor(Math.random() * 4);
+
+}else if(joueurDraftActuel.note < 89){
+
+    // Bon joueur
+    miseDepart =
+        enchereActuelle +
+        3 +
+        Math.floor(Math.random() * 8);
+
+}else{
+
+    // Star
+    miseDepart =
+        enchereActuelle +
+        5 +
+        Math.floor(Math.random() * 15);
+}
+
+    if(miseDepart > draftBudgetBot){
+        return;
+    }
+
+    enchereActuelle =
+        miseDepart;
+
+    proprietaireEnchere =
+        "bot";
+
+    ajouterHistorique(
+        `🤖 Bot : ${miseDepart} M€`
+    );
+}
+
+function genererBonusSpecial(){
+    const r = Math.random();
+    if(r < 0.20) return "vol";
+    if(r < 0.40) return "free";
+    if(r < 0.60) return "cash";
+    return null;
+}
+
+        function afficherActuJoueur(id) {
+            afficherJoueur(id); // Réutilise la logique d'affichage existante
+        }
+
+        function afficherActuConceicao() {
+
+    resetFiche();
+
+    document.getElementById('nom-joueur').innerText = "Eduardo Conceição";
+    document.getElementById('photo').src = "static/images/conceicao.jpg";
+
+    document.getElementById('s-age').innerText = "16 ans";
+    document.getElementById('s-nat').innerText = "Brésil 🇧🇷";
+    document.getElementById('s-paye').innerText = "INCONNU";
+    document.getElementById('s-fin').innerText = "30/01/2029";
+    document.getElementById('s-valeur').innerText = "INCONNUE";
+    document.getElementById('s-noteea').innerText = "INCONNUE";
+
+    document.getElementById('s-bio').innerText =
+        "Pépite de Palmeiras, pourrait être une future recrue phare de l'attaque mancunienne.";
+
+    document.getElementById('s-buts').innerText = "0";
+    document.getElementById('s-passes').innerText = "0";
+    document.getElementById('s-matchs').innerText = "0";
+    document.getElementById('s-note').innerText = "0.0";
+
+    showSection('joueur-solo');
+}
+
+        function afficherActuDetourbet() {
+
+    resetFiche();
+
+    document.getElementById('nom-joueur').innerText = "Mathys Detourbet";
+    document.getElementById('photo').src = "static/images/detourbet.jpg";
+
+    document.getElementById('s-age').innerText = "19 ans";
+    document.getElementById('s-nat').innerText = "France ";
+    document.getElementById('s-paye').innerText = "INCONNU";
+    document.getElementById('s-fin').innerText = "30/06/2028";
+    document.getElementById('s-valeur').innerText = "15M €";
+    document.getElementById('s-noteea').innerText = "64";
+
+    document.getElementById('s-bio').innerText =
+        "Pépite de l'ESTAC, révélation en Ligue II cette saison.";
+
+    document.getElementById('s-buts').innerText = "0";
+    document.getElementById('s-passes').innerText = "0";
+    document.getElementById('s-matchs').innerText = "0";
+    document.getElementById('s-note').innerText = "0.0";
+
+    showSection('joueur-solo');
+}
+        
+        function afficherActuAnderson() {
+
+    resetFiche();
+
+    document.getElementById('nom-joueur').innerText = "Elliot Anderson";
+    document.getElementById('photo').src = "static/images/anderson.jpg";
+
+    document.getElementById('s-age').innerText = "23 ans";
+    document.getElementById('s-nat').innerText = "Angleterre 🏴󠁧󠁢󠁥󠁮󠁧󠁿";
+    document.getElementById('s-paye').innerText = "205 000 €";
+    document.getElementById('s-fin').innerText = "30/06/2029";
+    document.getElementById('s-valeur').innerText = "75M €";
+    document.getElementById('s-noteea').innerText = "80";
+
+    document.getElementById('s-bio').innerText =
+        "Milieu talentueux très désiré.";
+
+    document.getElementById('s-buts').innerText = "0";
+    document.getElementById('s-passes').innerText = "0";
+    document.getElementById('s-matchs').innerText = "0";
+    document.getElementById('s-note').innerText = "0.0";
+
+    showSection('joueur-solo');
+}
+
+        function resetFiche() {
+
+    // Remet les labels d'origine
+    document.getElementById('s-age').previousElementSibling.innerText = "Âge";
+    document.getElementById('s-nat').previousElementSibling.innerText = "Nationalité";
+
+    // Réaffiche les lignes cachées
+    document.getElementById('s-paye').parentNode.style.display = "";
+    document.getElementById('s-fin').parentNode.style.display = "";
+    document.getElementById('s-valeur').parentNode.style.display = "";
+    document.getElementById('s-noteea').parentNode.style.display = "";
+
+    // Réaffiche le bloc statistiques
+    const statsBlock = document.getElementById('s-matchs')?.parentNode?.parentNode;
+    if (statsBlock) statsBlock.style.display = "";
+}
+
+        function afficherRumeur(id) {
+            const r = rumeurs[id]; if(!r) return;
+            document.getElementById('rumor-name').innerText = r.nom;
+            document.getElementById('rumor-photo').src = "static/images/" + r.img;
+            document.getElementById('rumor-data').innerHTML = `<strong>Détails de la rumeur :</strong><br><br>${r.detail}`;
+            document.getElementById('btn-chat-rumor').onclick = () => ouvrirChat(r.nom);
+            showSection('rumeur-detail');
+        }
+
+        let selectedSpotElement = null;
+        function preparerCompoInteractive() { renderSquadListForCompo(); showSection('ma-compo-view'); }
+        function renderSquadListForCompo() {
+            const container = document.getElementById('liste-joueurs-compo');
+            container.innerHTML = "";
+            const postesLabel = { "Gardien": "🧤 Gardiens", "Défenseur": "🛡️ Défenseurs", "Milieu": "⚡ Milieux", "Attaquant": "⚔️ Attaquants" };
+            const postes = { "Gardien": [], "Défenseur": [], "Milieu": [], "Attaquant": [] };
+            for (let id in effectif) { const p = effectif[id].poste; if (postes[p]) postes[p].push({id: id, ...effectif[id]}); }
+            for (let pKey in postes) {
+                if (postes[pKey].length > 0) {
+                    const titre = document.createElement('div'); titre.className = "compo-cat-titre"; titre.innerText = postesLabel[pKey]; container.appendChild(titre);
+                    postes[pKey].forEach(j => {
+                        const link = document.createElement('span'); link.className = "compo-joueur-link"; link.innerText = j.nom;
+                        link.onclick = () => placerJoueur(j.id); container.appendChild(link);
+                    });
+                }
+            }
+        }
+        function selectSpot(element) { document.querySelectorAll('.player-spot').forEach(s => s.classList.remove('selected')); selectedSpotElement = element; selectedSpotElement.classList.add('selected'); }
+        function placerJoueur(joueurId) {
+            if (!selectedSpotElement) { alert("Clique d'abord sur une place vide sur le terrain 🏟️"); return; }
+            const j = effectif[joueurId]; if (!j) return;
+            const imgHolder = selectedSpotElement.querySelector('.spot-img-holder');
+            const imgEl = imgHolder.querySelector('img');
+            const nameEl = selectedSpotElement.querySelector('.spot-player-name');
+            imgEl.src = "static/images/" + j.img; imgHolder.classList.add('has-player');
+            nameEl.innerText = j.nom;
+            selectedSpotElement.classList.remove('selected'); selectedSpotElement = null;
+        }
+
+        let currentChatTopic = ""; 
+        function ouvrirChat(nom) { currentChatTopic = nom; document.getElementById('chat-titre').innerText = "Avis : " + nom; loadMessages(); showSection('chat-section'); } 
+        function toggleEmojiPicker() { const picker = document.getElementById('emoji-picker'); picker.style.display = (picker.style.display === 'grid') ? 'none' : 'grid'; } 
+        function addEmoji(e) { const i = document.getElementById('chat-input'); i.value += e; document.getElementById('emoji-picker').style.display = 'none'; } 
+        function envoyerMessage() { const i = document.getElementById('chat-input'); const val = i.value.trim(); if(!val || !currentChatTopic) return; db.collection("messages").add({ topic: currentChatTopic, text: val, date: firebase.firestore.FieldValue.serverTimestamp() }); i.value = ""; } 
+        function loadMessages() { 
+            db.collection("messages").where("topic", "==", currentChatTopic).orderBy("date", "asc").onSnapshot((snapshot) => { 
+                const container = document.getElementById('chat-messages'); container.innerHTML = ""; 
+                snapshot.forEach((doc) => { const m = document.createElement('div'); m.className = "msg"; m.innerText = doc.data().text; container.appendChild(m); }); 
+                container.scrollTop = container.scrollHeight; 
+            }); 
+        }
+        let joueurMystere = null;
+        function demarrerQuiz() {
+            const cles = Object.keys(effectif);
+            joueurMystere = effectif[cles[Math.floor(Math.random() * cles.length)]];
+            const icons = { "Gardien": "🧤", "Défenseur": "🛡️", "Milieu": "⚡", "Attaquant": "⚔️" };
+            document.getElementById('quiz-clues').innerHTML = `Poste : ${icons[joueurMystere.poste]}<br>Âge : ${joueurMystere.age}<br>Nation : ${joueurMystere.nat}<br>Salaire : ${joueurMystere.paye}`;
+            document.getElementById('quiz-answer').value = "";
+            document.getElementById('quiz-feedback').innerText = "";
+            document.getElementById('quiz-img-result').style.display = "none";
+            showSection('quiz-view');
+        }
+
+        function ouvrirCentre(categorie) {
+            const container = document.getElementById('centre-container');
+            container.innerHTML = "";
+            const joueurs = centreFormation[categorie];
+            joueurs.forEach(j => {
+                container.innerHTML += `
+                <div class="centre-card">
+                    <img src="static/images/${j.img}">
+                    <div class="centre-info">
+                        <h3>${j.nom}</h3>
+                        <p><strong>🕗 Âge :</strong> ${j.age}</p>
+                        <p><strong>🌍 Nationalité :</strong> ${j.nat}</p>
+                        <p><strong>⚽ Poste :</strong> ${j.poste}</p>
+                        <p><strong>🎂 Anniversaire :</strong> ${j.anniv}</p>
+                    </div>
+                </div>
+                `;
+            });
+            showSection('centre-formation-view');
+        }
+
+        let deckJoueur = [];
+        let deckBot = [];
+        let carteJoueur = null;
+        let carteBot = null;
+        let critereActuel = null;
+
+function melanger(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+        
+function verifierReponseQuiz() {
+    const rep = document.getElementById('quiz-answer').value.trim().toLowerCase();
+    const f = document.getElementById('quiz-feedback');
+    if (rep === joueurMystere.nom.toLowerCase()) { f.innerText = "VRAI ! ✅"; f.style.color = "green"; }
+    else { f.innerText = "FAUX ❌ (C'était " + joueurMystere.nom + ")"; f.style.color = "red"; }
+    const img = document.getElementById('quiz-img-result');
+    img.src = "static/images/" + joueurMystere.img; img.style.display = "block";
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        const active = document.activeElement;
+        const isInput = active && active.tagName === "INPUT";
+
+        if (isInput && active.id === "montant-enchere") {
+            faireEnchere();
+        }
+    }
+});
+
+
+</script>
 </body>
 </html>
