@@ -1110,9 +1110,6 @@
         }
 
         document.addEventListener('click', function(event) {
-            const menu = document.getElementById('menu');
-            const btnMenu = document.getElementById('btn-menu');
-            document.addEventListener('click', function(event) {
     const menu = document.getElementById('menu');
     const btnMenu = document.getElementById('btn-menu');
 
@@ -1127,11 +1124,6 @@
         menu.classList.remove('ouvert');
     }
 });
-                document.querySelectorAll('.sous-menu').forEach(sm => sm.classList.remove('show'));
-                menu.classList.remove('ouvert');
-            }
-        });
-
         function afficherJoueur(id) {
             const j = effectif[id]; if(!j) return;
             
