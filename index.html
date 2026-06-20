@@ -1079,7 +1079,7 @@
 }));
 
         function chargerPositionsActuelles() {
-            const container = document.getElementById('positions-container');
+            const container = document.getElementById('effectif-container') || document.getElementById('centre-container');
             container.innerHTML = ""; // On vide le container
             
             competitionsActuelles.forEach(c => {
