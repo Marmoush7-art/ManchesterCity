@@ -28,11 +28,13 @@
         .centre-info h3 { margin-top: 0; color: var(--city-sky-blue); }
         .centre-info p { margin: 6px 0; font-size: 0.95rem; }
 
-        #menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100vh; background: #001b38; color: white; transition: 0.4s; padding-top: 70px; z-index: 1000; overflow-y: scroll; overflow-x: hidden; box-sizing: border-box; padding-bottom: 150px; }
+        #menu { position: fixed; left: -280px; top: 0; width: 280px; height: 100vh; max-height: 100vh; background: #001b38; color: white; transition: 0.4s; padding-top: 70px; padding-bottom: 150px; z-index: 1000; overflow-y: auto; overflow-x: hidden; box-sizing: border-box; }
         #menu.ouvert { left: 0; }
         #menu::-webkit-scrollbar { width: 8px; }
         #menu::-webkit-scrollbar-thumb { background: #6CABDD; border-radius: 10px; }
         #menu::-webkit-scrollbar-track { background: #001b38; }
+        #menu::-webkit-scrollbar { width: 6px; }
+        #menu::-webkit-scrollbar-thumb { background: #4a90e2; border-radius: 10px; }
         .menu-item { padding: 18px 25px; border-bottom: 1px solid #333; cursor: pointer; font-weight: bold; display: flex; align-items: center; color: white; text-decoration: none; }
         .menu-item-icon { margin-right: 12px; font-size: 1.2rem; min-width: 25px; text-align: center; }
         
