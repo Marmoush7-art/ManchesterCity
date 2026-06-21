@@ -1099,7 +1099,17 @@
         }
 
         function toggleMenu(event) { event.stopPropagation(); document.getElementById('menu').classList.toggle('ouvert'); }
-        function toggleSubMenu(id) { document.getElementById(id).classList.toggle('show'); }
+        function toggleSubMenu(id) {
+    const allMenus = document.querySelectorAll('.sous-menu');
+
+    allMenus.forEach(menu => {
+        if (menu.id !== id) {
+            menu.classList.remove('show');
+        }
+    });
+
+    document.getElementById(id).classList.toggle('show');
+}
         function showSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
