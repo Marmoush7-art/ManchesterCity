@@ -124,6 +124,72 @@
       font-size: 30px;
     }
 
+    /* CHEVAL STAR DU MOIS */
+.star-horse {
+  max-width: 800px;
+  margin: 45px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #fffdf9, #edf3e9);
+  border-radius: 25px;
+  box-shadow: 0 5px 20px rgba(70, 50, 30, 0.08);
+  text-align: center;
+  border: 2px solid #d8e3d1;
+}
+
+.star-horse h2 {
+  color: #61765e;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.star-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.star-image {
+  width: 180px;
+  height: 180px;
+  background: #e5eadf;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 85px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.star-info {
+  text-align: left;
+  max-width: 350px;
+}
+
+.star-info h3 {
+  color: #a77b5d;
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+.star-info p {
+  color: #776b63;
+  margin: 7px 0;
+  font-size: 16px;
+}
+
+.star-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 15px;
+  background: #a77b5d;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
     /* HORSES */
     .horses {
       display: grid;
@@ -346,25 +412,56 @@ nav {
       </a>
     </div>
 
-    <!-- STATISTIQUES -->
-    <div class="stats">
-      <div class="stat">
-        <strong>12</strong>
-        Chevaux
-      </div>
+   <!-- STATISTIQUES -->
+<div class="stats">
 
-      <div class="stat">
-        <strong>8</strong>
-        Races
-      </div>
+  <div class="stat">
+    <strong>12</strong>
+    Chevaux
+  </div>
 
-      <div class="stat">
-        <strong>5</strong>
-        Poulains
-      </div>
+  <div class="stat">
+    <strong>8</strong>
+    Races
+  </div>
+
+  <div class="stat">
+    <strong>5</strong>
+    Poulains
+  </div>
+
+</div>
+
+
+<!-- CHEVAL STAR DU MOIS -->
+<div class="star-horse">
+
+  <h2>⭐ Cheval star du mois !</h2>
+
+  <div class="star-content">
+
+    <div class="star-image">
+      🐎
     </div>
 
-  </main>
+    <div class="star-info">
+      <h3>Étoile 🌟</h3>
+
+      <p><b>Race :</b> Frison</p>
+      <p><b>Robe :</b> Noire</p>
+      <p><b>Âge :</b> 8 ans</p>
+
+      <span class="star-badge">
+        🏆 Star de Canterwood
+      </span>
+    </div>
+
+  </div>
+
+</div>
+
+
+</main>
 
   <!-- CHEVAUX -->
   <section id="chevaux">
