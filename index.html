@@ -190,6 +190,65 @@
   font-weight: bold;
 }
 
+    /* TABLEAU QUI MONTE QUI */
+.riders-table {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fffdf9;
+  border-radius: 25px;
+  box-shadow: 0 5px 20px rgba(70, 50, 30, 0.08);
+}
+
+.riders-table h2 {
+  text-align: center;
+  color: #61765e;
+  font-size: 30px;
+  margin-bottom: 25px;
+}
+
+.riders-table table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.riders-table th {
+  background: #61765e;
+  color: white;
+  padding: 15px;
+  text-align: left;
+}
+
+.riders-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e5eadf;
+  color: #776b63;
+  background: white;
+}
+
+.riders-table tr:hover td {
+  background: #edf3e9;
+}
+
+.riders-table td:first-child {
+  font-weight: bold;
+  color: #61765e;
+}
+
+@media (max-width: 600px) {
+  .riders-table {
+    padding: 15px;
+  }
+
+  .riders-table th,
+  .riders-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
     /* HORSES */
     .horses {
       display: grid;
@@ -521,6 +580,52 @@ nav {
 
 </div>
 
+    <!-- QUI MONTE QUI -->
+<div class="riders-table">
+
+  <h2>🐎 Qui monte qui ?</h2>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>👤 Cavalier / Cavalière</th>
+        <th>🐴 Cheval</th>
+        <th>🏆 Discipline</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr>
+        <td>Emma</td>
+        <td>Étoile 🌟</td>
+        <td>Dressage</td>
+      </tr>
+
+      <tr>
+        <td>Léa</td>
+        <td>Spirit</td>
+        <td>Saut d'obstacles</td>
+      </tr>
+
+      <tr>
+        <td>Clara</td>
+        <td>Perle</td>
+        <td>Dressage</td>
+      </tr>
+
+      <tr>
+        <td>Julie</td>
+        <td>Tonnerre</td>
+        <td>Cross</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
 
 </main>
 
