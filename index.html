@@ -1,1 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Mon Écurie Schleich 🐴</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f8f4ef;
+      color: #493d35;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #8fae8b, #c4d5b9);
+      color: white;
+      padding: 35px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 17px;
+      opacity: 0.9;
+    }
+
+    /* NAVIGATION */
+    nav {
+      background: white;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      color: #5f735d;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: #a77b5d;
+    }
+
+    /* HERO */
+    .hero {
+      max-width: 1100px;
+      margin: 45px auto;
+      padding: 45px 25px;
+      text-align: center;
+      background: #fffdf9;
+      border-radius: 25px;
+      box-shadow: 0 5px 25px rgba(70, 50, 30, 0.08);
+    }
+
+    .hero h2 {
+      font-size: 32px;
+      color: #61765e;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      line-height: 1.7;
+    }
+
+    /* STATS */
+    .stats {
+      max-width: 1000px;
+      margin: 30px auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 0 20px;
+    }
+
+    .stat {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      width: 200px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 30px;
+      color: #8fae8b;
+    }
+
+    /* SECTION */
+    section {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #61765e;
+      font-size: 30px;
+    }
+
+    /* HORSES */
+    .horses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+
+    .horse-card {
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .horse-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .horse-image {
+      height: 190px;
+      background: #e5eadf;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+
+    .horse-info {
+      padding: 20px;
+    }
+
+    .horse-info h3 {
+      color: #61765e;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .horse-info p {
+      margin: 5px 0;
+      color: #776b63;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 12px;
+      background: #edf3e9;
+      color: #61765e;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    /* GALERIE */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .gallery div {
+      height: 200px;
+      background: #ddd;
+      border-radius: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 60px;
+      overflow: hidden;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 70px;
+      padding: 30px;
+      text-align: center;
+      background: #61765e;
+      color: white;
+    }
+
+    footer p {
+      opacity: 0.9;
+    }
+
+    /* BOUTON */
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 22px;
+      background: #a77b5d;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: 0.2s;
+    }
+
+    .button:hover {
+      background: #8d654c;
+      transform: scale(1.04);
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 15px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- EN-TÊTE -->
+  <header>
+    <h1>🐴 Mon Écurie Schleich</h1>
+    <p>Bienvenue dans mon petit monde équestre ✨</p>
+  </header>
+
+  <!-- MENU -->
+  <nav>
+    <a href="#accueil">Accueil</a>
+    <a href="#chevaux">Mes chevaux</a>
+    <a href="#galerie">Galerie</a>
+  </nav>
+
+  <!-- ACCUEIL -->
+  <main id="accueil">
+
+    <div class="hero">
+      <h2>Bienvenue à l'écurie 🌿</h2>
+      <p>
+        Ici, tu peux retrouver tous mes chevaux Schleich,
+        leurs informations, leurs races et mes plus belles photos.
+        🐎🤎
+      </p>
+
+      <a href="#chevaux" class="button">
+        Découvrir mes chevaux
+      </a>
+    </div>
+
+    <!-- STATISTIQUES -->
+    <div class="stats">
+      <div class="stat">
+        <strong>12</strong>
+        Chevaux
+      </div>
+
+      <div class="stat">
+        <strong>8</strong>
+        Races
+      </div>
+
+      <div class="stat">
+        <strong>5</strong>
+        Poulains
+      </div>
+    </div>
+
+  </main>
+
+  <!-- CHEVAUX -->
+  <section id="chevaux">
+
+    <h2>🐎 Mes chevaux</h2>
+
+    <div class="horses">
+
+      <article class="horse-card">
+        <div class="horse-image">🐴</div>
+
+        <div class="horse-info">
+          <h3>Étoile</h3>
+          <p><b>Race :</b> Frison</p>
+          <p><b>Robe :</b> Noire</p>
+          <p><b>Âge :</b> 8 ans</p>
+
+          <span class="tag">Jument</span>
+        </div>
+      </article>
+
+
+      <article class="horse-card">
+        <div class="horse-image">🐎</div>
+
+        <div class="horse-info">
+          <h3>Spirit</h3>
+          <p><b>Race :</b> Mustang</p>
+          <p><b>Robe :</b> Alezan</p>
+          <p><b>Âge :</b> 6 ans</p>
+
+          <span class="tag">Étalon</span>
+        </div>
+      </article>
+
+
+      <article class="horse-card">
+        <div class="horse-image">🐴</div>
+
+        <div class="horse-info">
+          <h3>Perle</h3>
+          <p><b>Race :</b> Arabe</p>
+          <p><b>Robe :</b> Grise</p>
+          <p><b>Âge :</b> 5 ans</p>
+
+          <span class="tag">Jument</span>
+        </div>
+      </article>
+
+
+      <article class="horse-card">
+        <div class="horse-image">🐎</div>
+
+        <div class="horse-info">
+          <h3>Tonnerre</h3>
+          <p><b>Race :</b> Appaloosa</p>
+          <p><b>Robe :</b> Léopard</p>
+          <p><b>Âge :</b> 7 ans</p>
+
+          <span class="tag">Hongre</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- GALERIE -->
+  <section id="galerie">
+
+    <h2>📸 Ma galerie</h2>
+
+    <div class="gallery">
+
+      <div>🐴</div>
+      <div>🌳🐎</div>
+      <div>🏇</div>
+      <div>🌿🐴</div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PIED DE PAGE -->
+  <footer>
+    <p>🐴 Mon Écurie Schleich • Fait avec 🤎</p>
+    <p>Bienvenue dans mon univers équestre 🌿</p>
+  </footer>
+
+</body>
+</html>
