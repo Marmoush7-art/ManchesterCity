@@ -242,6 +242,60 @@
         font-size: 14px;
       }
     }
+
+    /* MENU BURGER */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  padding: 12px 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.burger {
+  background: #61765e;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 15px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.burger:hover {
+  background: #4f634d;
+}
+
+.menu {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  background: #fffdf9;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.menu.active {
+  display: flex;
+}
+
+.menu a {
+  color: #61765e;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.menu a:hover {
+  background: #edf3e9;
+  color: #a77b5d;
+}
   </style>
 </head>
 
@@ -254,12 +308,15 @@
   </header>
 
   <!-- MENU -->
-  <nav>
-    <a href="#accueil">Accueil</a>
-    <a href="#chevaux">Mes chevaux</a>
-    <a href="#galerie">Galerie</a>
-  </nav>
+ <nav>
+  <button class="burger" onclick="toggleMenu()">☰</button>
 
+  <div class="menu" id="menu">
+    <a href="#accueil">🏠 Accueil</a>
+    <a href="#chevaux">🐎 Mes chevaux</a>
+    <a href="#galerie">📸 Galerie</a>
+  </div>
+</nav>
   <!-- ACCUEIL -->
   <main id="accueil">
 
@@ -385,5 +442,12 @@
     <p>Bienvenue dans mon univers équestre 🌿</p>
   </footer>
 
+  <script>
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.classList.toggle("active");
+  }
+</script>
+  
 </body>
 </html>
