@@ -446,13 +446,13 @@ nav {
   </button>
 
   <div class="disciplines" id="disciplines">
-  <button onclick="openDiscipline('dressage')">🐎 Dressage</button>
-  <button onclick="openDiscipline('saut')">🏇 Saut d'obstacles</button>
-  <button onclick="openDiscipline('cross')">🌲 Cross</button>
-  <button onclick="openDiscipline('complet')">🏆 Concours complet</button>
-  <button onclick="openDiscipline('western')">🤠 Équitation western</button>
-</div>
-   
+    <a href="#dressage">🐎 Dressage</a>
+    <a href="#saut">🏇 Saut d'obstacles</a>
+    <a href="#cross">🌲 Cross</a>
+    <a href="#complet">🏆 Concours complet</a>
+    <a href="#western">🤠 Équitation western</a>
+  </div>
+
   <a href="#galerie">📸 Galerie</a>
 
 </div>
@@ -679,63 +679,6 @@ nav {
     disciplines.classList.toggle("active");
   }
 </script>
-
-  <!-- FENÊTRES DES DISCIPLINES -->
-
-<div class="discipline-popup" id="dressage">
-  <div class="popup-content">
-    <button class="close-popup" onclick="closeDiscipline('dressage')">✕</button>
-    <h2>🐎 Dressage</h2>
-    <p>
-      Le dressage est une discipline basée sur la précision,
-      l'élégance et la complicité entre le cheval et son cavalier. 🌿
-    </p>
-  </div>
-</div>
-
-<div class="discipline-popup" id="saut">
-  <div class="popup-content">
-    <button class="close-popup" onclick="closeDiscipline('saut')">✕</button>
-    <h2>🏇 Saut d'obstacles</h2>
-    <p>
-      Le saut d'obstacles demande au cheval et à son cavalier
-      de franchir différents obstacles avec précision et agilité. 🏆
-    </p>
-  </div>
-</div>
-
-<div class="discipline-popup" id="cross">
-  <div class="popup-content">
-    <button class="close-popup" onclick="closeDiscipline('cross')">✕</button>
-    <h2>🌲 Cross</h2>
-    <p>
-      Le cross se pratique sur un parcours extérieur avec
-      des obstacles naturels. 🌳🐎
-    </p>
-  </div>
-</div>
-
-<div class="discipline-popup" id="complet">
-  <div class="popup-content">
-    <button class="close-popup" onclick="closeDiscipline('complet')">✕</button>
-    <h2>🏆 Concours complet</h2>
-    <p>
-      Le concours complet rassemble trois disciplines :
-      dressage, saut d'obstacles et cross.
-    </p>
-  </div>
-</div>
-
-<div class="discipline-popup" id="western">
-  <div class="popup-content">
-    <button class="close-popup" onclick="closeDiscipline('western')">✕</button>
-    <h2>🤠 Équitation western</h2>
-    <p>
-      L'équitation western regroupe différentes disciplines
-      inspirées du travail des chevaux de ranch. 🐴
-    </p>
-  </div>
-</div>
   
 </body>
 </html>
