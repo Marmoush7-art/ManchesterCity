@@ -375,6 +375,51 @@ nav {
   background: #edf3e9;
   color: #a77b5d;
 }
+ /* DISCIPLINES */
+.discipline-button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #61765e;
+  font-weight: bold;
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 16px;
+  font-family: "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.discipline-button:hover {
+  background: #edf3e9;
+  color: #a77b5d;
+}
+
+/* SOUS-MENU DES DISCIPLINES */
+.disciplines {
+  display: none;
+  flex-direction: column;
+  margin-left: 15px;
+  border-left: 3px solid #d8e3d1;
+  padding-left: 8px;
+}
+
+.disciplines.active {
+  display: flex;
+}
+
+.disciplines a {
+  color: #776b63;
+  text-decoration: none;
+  padding: 9px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.disciplines a:hover {
+  background: #edf3e9;
+  color: #a77b5d;
+} 
   </style>
 </head>
 
@@ -390,11 +435,27 @@ nav {
  <nav>
   <button class="burger" onclick="toggleMenu()">☰</button>
 
-  <div class="menu" id="menu">
-    <a href="#accueil">🏠 Accueil</a>
-    <a href="#chevaux">🐎 Mes chevaux</a>
-    <a href="#galerie">📸 Galerie</a>
+ <div class="menu" id="menu">
+
+  <a href="#accueil">🏠 Accueil</a>
+  <a href="#chevaux">🐎 Mes chevaux</a>
+
+  <!-- SOUS-MENU DISCIPLINES -->
+  <button class="discipline-button" onclick="toggleDisciplines()">
+    🏆 Disciplines ▾
+  </button>
+
+  <div class="disciplines" id="disciplines">
+    <a href="#dressage">🐎 Dressage</a>
+    <a href="#saut">🏇 Saut d'obstacles</a>
+    <a href="#cross">🌲 Cross</a>
+    <a href="#complet">🏆 Concours complet</a>
+    <a href="#western">🤠 Équitation western</a>
   </div>
+
+  <a href="#galerie">📸 Galerie</a>
+
+</div>
 </nav>
   <!-- ACCUEIL -->
   <main id="accueil">
@@ -556,6 +617,11 @@ nav {
   function toggleMenu() {
     const menu = document.getElementById("menu");
     menu.classList.toggle("active");
+  }
+
+  function toggleDisciplines() {
+    const disciplines = document.getElementById("disciplines");
+    disciplines.classList.toggle("active");
   }
 </script>
   
