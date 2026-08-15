@@ -482,6 +482,51 @@ nav {
   </style>
 </head>
 
+  /* NOMS POUR CHEVAUX */
+.names-button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #61765e;
+  font-weight: bold;
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 16px;
+  font-family: "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.names-button:hover {
+  background: #edf3e9;
+  color: #a77b5d;
+}
+
+/* SOUS-MENU DES NOMS */
+.horse-names {
+  display: none;
+  flex-direction: column;
+  margin-left: 15px;
+  border-left: 3px solid #d8e3d1;
+  padding-left: 8px;
+}
+
+.horse-names.active {
+  display: flex;
+}
+
+.horse-names a {
+  color: #776b63;
+  text-decoration: none;
+  padding: 9px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.horse-names a:hover {
+  background: #edf3e9;
+  color: #a77b5d;
+}
 <body>
 
   <!-- EN-TÊTE -->
@@ -512,6 +557,18 @@ nav {
     <a href="#western">🤠 Équitation western</a>
   </div>
 
+<!-- SOUS-MENU NOMS POUR CHEVAUX -->
+<button class="names-button" onclick="toggleNames()">
+  🐴 Noms pour chevaux ▾
+</button>
+
+<div class="horse-names" id="horse-names">
+  <a href="#juments">🌸 Noms de juments</a>
+  <a href="#poulains">🍼 Noms de poulains</a>
+  <a href="#etalons">🐎 Noms d'étalons</a>
+  <a href="#mixtes">✨ Noms mixtes</a>
+</div>
+  
   <a href="#galerie">📸 Galerie</a>
    </div>
 </nav>
@@ -693,6 +750,24 @@ nav {
     </div>
   </section>
 
+   <!-- NOMS POUR CHEVAUX -->
+
+<section id="juments">
+  <h2>🌸 Noms de juments</h2>
+</section>
+
+<section id="poulains">
+  <h2>🍼 Noms de poulains</h2>
+</section>
+
+<section id="etalons">
+  <h2>🐎 Noms d'étalons</h2>
+</section>
+
+<section id="mixtes">
+  <h2>✨ Noms mixtes</h2>
+</section>
+
   <!-- DISCIPLINES -->
 
 <section id="dressage">
@@ -782,6 +857,11 @@ nav {
     const disciplines = document.getElementById("disciplines");
     disciplines.classList.toggle("active");
   }
+
+  function toggleNames() {
+   const names = document.getElementById("horse-names");
+   names.classList.toggle("active");
+}
 </script>
   
 </body>
