@@ -329,6 +329,12 @@
 
 .horse-card {
   flex: 0 0 calc((100% - 75px) / 4);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.horse-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
     .carousel-button {
   width: 50px;
