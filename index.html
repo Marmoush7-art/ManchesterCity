@@ -309,57 +309,44 @@
 
     /* HORSES */
     .horses {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 25px;
-    }
+  display: flex;
+  gap: 25px;
+  transition: transform 0.4s ease;
+}
 
-    .horse-card {
-      background: white;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.07);
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
+.horse-carousel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  max-width: 1200px;
+  margin: auto;
+}
 
-    .horse-card:hover {
-      transform: translateY(-7px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    }
+.horse-viewport {
+  overflow: hidden;
+  flex: 1;
+}
 
-    .horse-image {
-      height: 190px;
-      background: #e5eadf;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 80px;
-    }
+.horse-card {
+  flex: 0 0 calc((100% - 75px) / 4);
+}
+    .carousel-button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: #61765e;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.2s;
+}
 
-    .horse-info {
-      padding: 20px;
-    }
-
-    .horse-info h3 {
-      color: #61765e;
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-
-    .horse-info p {
-      margin: 5px 0;
-      color: #776b63;
-    }
-
-    .tag {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 6px 12px;
-      background: #edf3e9;
-      color: #61765e;
-      border-radius: 20px;
-      font-size: 13px;
-    }
+.carousel-button:hover {
+  background: #a77b5d;
+  transform: scale(1.08);
+}
 
     /* GALERIE */
     .gallery {
@@ -746,74 +733,79 @@ nav {
   <!-- CHEVAUX -->
   <section id="chevaux">
 
-    <h2>🐎 Mes chevaux</h2>
+  <h2>🐎 Mes chevaux</h2>
 
-    <div class="horses">
+  <div class="horse-carousel">
 
-      <article class="horse-card">
-        <div class="horse-image">
-  <img src="static/images/etoilefilante.jpg" alt="Étoile Filante">
-</div>
+    <button class="carousel-button prev" onclick="moveHorses(-1)">←</button>
 
-        <div class="horse-info">
-          <h3>Etoile Filante</h3>
-          <p><b>Race :</b> Appaloosa</p>
-          <p><b>Robe :</b> Appaloosa</p>
-          <p><b>Âge :</b> 9 ans</p>
+    <div class="horse-viewport">
+      <div class="horses" id="horseTrack">
 
-          <span class="tag">Etalon</span>
-        </div>
-      </article>
+        <article class="horse-card">
+          <div class="horse-image">
+            <img src="static/images/etoilefilante.jpg" alt="Étoile Filante">
+          </div>
 
+          <div class="horse-info">
+            <h3>Etoile Filante</h3>
+            <p><b>Race :</b> Appaloosa</p>
+            <p><b>Robe :</b> Appaloosa</p>
+            <p><b>Âge :</b> 9 ans</p>
+            <span class="tag">Etalon</span>
+          </div>
+        </article>
 
-      <article class="horse-card">
-        <div class="horse-image">
-  <img src="static/images/akira.jpg" alt="Akira">
-</div>
-        <div class="horse-info">
-          <h3>Akira</h3>
-          <p><b>Race :</b> Mustang</p>
-          <p><b>Robe :</b> Pie alezan</p>
-          <p><b>Âge :</b> 8 ans</p>
+        <article class="horse-card">
+          <div class="horse-image">
+            <img src="static/images/akira.jpg" alt="Akira">
+          </div>
 
-          <span class="tag">Étalon</span>
-        </div>
-      </article>
+          <div class="horse-info">
+            <h3>Akira</h3>
+            <p><b>Race :</b> Mustang</p>
+            <p><b>Robe :</b> Pie alezan</p>
+            <p><b>Âge :</b> 8 ans</p>
+            <span class="tag">Étalon</span>
+          </div>
+        </article>
 
+        <article class="horse-card">
+          <div class="horse-image">
+            <img src="static/images/eternelia.jpg" alt="Eternelia">
+          </div>
 
-      <article class="horse-card">
-  <div class="horse-image">
-  <img src="static/images/eternelia.jpg" alt="Eternelia">
-</div>
+          <div class="horse-info">
+            <h3>Eternelia</h3>
+            <p><b>Race :</b> Frison</p>
+            <p><b>Robe :</b> Noire</p>
+            <p><b>Âge :</b> 6 ans</p>
+            <span class="tag">Jument</span>
+          </div>
+        </article>
 
-        <div class="horse-info">
-          <h3>Eternelia</h3>
-          <p><b>Race :</b> Frison</p>
-          <p><b>Robe :</b> Noire</p>
-          <p><b>Âge :</b> 6 ans</p>
+        <article class="horse-card">
+          <div class="horse-image">
+            <img src="static/images/myrtille.jpg" alt="Myrtille">
+          </div>
 
-          <span class="tag">Jument</span>
-        </div>
-      </article>
+          <div class="horse-info">
+            <h3>Myrtille</h3>
+            <p><b>Race :</b> Hanovrien</p>
+            <p><b>Robe :</b> Noire</p>
+            <p><b>Âge :</b> 4 ans</p>
+            <span class="tag">Jument</span>
+          </div>
+        </article>
 
-
-      <article class="horse-card">
-        <div class="horse-image">
-  <img src="static/images/myrtille.jpg" alt="Myrtille">
-</div>
-
-        <div class="horse-info">
-          <h3>Myrtille</h3>
-          <p><b>Race :</b> Hanovrien</p>
-          <p><b>Robe :</b> Noire</p>
-          <p><b>Âge :</b> 4 ans</p>
-
-          <span class="tag">Jument</span>
-        </div>
-      </article>
-
+      </div>
     </div>
-  </section>
+
+    <button class="carousel-button next" onclick="moveHorses(1)">→</button>
+
+  </div>
+
+</section>
 
    <!-- NOMS POUR CHEVAUX -->
 
@@ -944,6 +936,30 @@ nav {
   function toggleNames() {
    const names = document.getElementById("horse-names");
    names.classList.toggle("active");
+}
+    let horsePosition = 0;
+
+function moveHorses(direction) {
+  const track = document.getElementById("horseTrack");
+  const cards = track.querySelectorAll(".horse-card");
+
+  const totalCards = cards.length;
+
+  horsePosition += direction;
+
+  // Empêche d'aller avant le premier cheval
+  if (horsePosition < 0) {
+    horsePosition = 0;
+  }
+
+  // Empêche d'aller trop loin
+  if (horsePosition > totalCards - 4) {
+    horsePosition = totalCards - 4;
+  }
+
+  const cardWidth = cards[0].offsetWidth + 25;
+
+  track.style.transform = `translateX(-${horsePosition * cardWidth}px)`;
 }
 </script>
   
