@@ -37,6 +37,53 @@
       opacity: 0.9;
     }
 
+    /* ANNONCES */
+    .announcements {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .announcement-card {
+      background: #fffdf9;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(70, 50, 30, 0.08);
+      border-left: 6px solid #8fae8b;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .announcement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .announcement-header h3 {
+      color: #61765e;
+      font-size: 20px;
+    }
+
+    .announcement-date {
+      font-size: 14px;
+      color: #a77b5d;
+      font-weight: bold;
+      background: #edf3e9;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    .announcement-card p {
+      color: #776b63;
+      line-height: 1.6;
+    }
+
     /* NAVIGATION */
     nav {
       background: white;
@@ -639,6 +686,7 @@ nav {
 </div>
   
   <a href="#galerie">📸 Galerie</a>
+  <a href="#annonces">📢 Annonces</a>
    </div>
 </nav>
   <!-- ACCUEIL -->
@@ -948,6 +996,39 @@ nav {
       <div>
   <img src="static/images/camargue.jpg" alt="Cheval camarguais">
 </div>
+
+    </div>
+
+  </section>
+
+  <!-- ANNONCES -->
+  <section id="annonces">
+
+    <h2>📢 Les Nouvelles de l'Écurie</h2>
+
+    <div class="announcements">
+
+      <article class="announcement-card">
+        <div class="announcement-header">
+          <h3>🍼 Un nouveau poulain est né !</h3>
+          <span class="announcement-date">Récemment</span>
+        </div>
+        <p>
+          Grande nouvelle à l'écurie de Canterwood ! Un adorable petit poulain vient de faire son arrivée.
+          Il se porte à merveille et gambade déjà dans le pré avec sa maman. 🐴✨
+        </p>
+      </article>
+
+      <article class="announcement-card">
+        <div class="announcement-header">
+          <h3>🏆 Victoire au concours de Dressage !</h3>
+          <span class="announcement-date">Ce mois-ci</span>
+        </div>
+        <p>
+          Bravo à Lisa.R et Raptor 🌟 qui ont décroché la première place lors de la dernière compétition.
+          Une magnifique démonstration d'élégance ! 🌿
+        </p>
+      </article>
 
     </div>
 
