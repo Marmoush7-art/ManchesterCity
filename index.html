@@ -518,6 +518,42 @@
       height: 100%;
       object-fit: cover;
     }
+    /* HORAIRES */
+    .opening-hours {
+      background: #fffdf9;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(70, 50, 30, 0.08);
+      border: 2px solid #d8e3d1;
+    }
+
+    .hours-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .hours-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #edf3e9;
+      color: #776b63;
+      font-size: 16px;
+    }
+
+    .hours-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hours-table td:first-child {
+      font-weight: bold;
+      color: #61765e;
+    }
+
+    .hours-table td:last-child {
+      text-align: right;
+    }
 
     /* FOOTER */
     footer {
@@ -763,6 +799,7 @@ nav {
   <a href="#mascottes">🐾 Nos Mascottes</a>
   <a href="#galerie">📸 Galerie</a>
   <a href="#annonces">📢 Annonces</a>
+  <a href="#horaires">🕒 Horaires</a>
    </div>
 </nav>
   <!-- ACCUEIL -->
@@ -1200,8 +1237,31 @@ nav {
     </div>
 
   </section>
+<!-- HORAIRES -->
+  <section id="horaires">
+    <h2>🕒 Horaires d'ouverture</h2>
 
-
+    <div class="opening-hours">
+      <table class="hours-table">
+        <tr>
+          <td>Lundi - Vendredi</td>
+          <td>09h00 - 19h00</td>
+        </tr>
+        <tr>
+          <td>Samedi</td>
+          <td>08h30 - 20h00</td>
+        </tr>
+        <tr>
+          <td>Dimanche</td>
+          <td>09h00 - 18h00</td>
+        </tr>
+        <tr>
+          <td>Jours fériés</td>
+          <td>Fermé</td>
+        </tr>
+      </table>
+    </div>
+  </section>
   <!-- PIED DE PAGE -->
   <footer>
     <p>🐴 Mon Écurie Schleich • Fait avec 🤎</p>
