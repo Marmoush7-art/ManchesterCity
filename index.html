@@ -36,6 +36,32 @@
       font-size: 17px;
       opacity: 0.9;
     }
+    /* LISTE DES NOMS DE CHEVAUX */
+    .name-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .name-tag {
+      background: #fffdf9;
+      color: #61765e;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      border: 1px solid #d8e3d1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: 0.2s;
+    }
+
+    .name-tag:hover {
+      background: #edf3e9;
+      color: #a77b5d;
+      transform: translateY(-2px);
+    }
 
     /* ANNONCES */
     .announcements {
@@ -896,16 +922,46 @@ nav {
    <!-- NOMS POUR CHEVAUX -->
 
 <section id="juments">
-  <h2>🌸 Noms de juments</h2>
-</section>
+    <h2>🌸 Noms de juments</h2>
+    <div class="name-list">
+      <span class="name-tag">Bella 🌸</span>
+      <span class="name-tag">Luna 🌙</span>
+      <span class="name-tag">Maya 🌿</span>
+      <span class="name-tag">Princesse 👑</span>
+      <span class="name-tag">Daisy 🌼</span>
+      <span class="name-tag">Flora 🌺</span>
+      <span class="name-tag">Symphonie 🎼</span>
+      <span class="name-tag">Aurore 🌅</span>
+    </div>
+  </section>
 
 <section id="poulains">
-  <h2>🍼 Noms de poulains</h2>
-</section>
+    <h2>🍼 Noms de poulains</h2>
+    <div class="name-list">
+      <span class="name-tag">Bambi 🍼</span>
+      <span class="name-tag">Lutin ✨</span>
+      <span class="name-tag">Nuage ☁️</span>
+      <span class="name-tag">Noisette 🌰</span>
+      <span class="name-tag">Caramel 🍬</span>
+      <span class="name-tag">Petit Prince 👑</span>
+      <span class="name-tag">Éclair ⚡</span>
+      <span class="name-tag">Choco 🍫</span>
+    </div>
+  </section>
 
 <section id="etalons">
-  <h2>🐎 Noms d'étalons</h2>
-</section>
+    <h2>🐎 Noms d'étalons</h2>
+    <div class="name-list">
+      <span class="name-tag">Tonnerre ⚡</span>
+      <span class="name-tag">Pegase 🕊️</span>
+      <span class="name-tag">Apollo ☀️</span>
+      <span class="name-tag">Sultan 👑</span>
+      <span class="name-tag">Shadow 🌑</span>
+      <span class="name-tag">Prince ⚔️</span>
+      <span class="name-tag">Diable 😈</span>
+      <span class="name-tag">Titan 🏔️</span>
+    </div>
+  </section>
 
   <!-- DISCIPLINES -->
 
